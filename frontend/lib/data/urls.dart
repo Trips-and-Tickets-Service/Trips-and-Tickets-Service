@@ -1,0 +1,2 @@
+String signInUrl = '';
+String signUpUrl = '';

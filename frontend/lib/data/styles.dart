@@ -35,7 +35,7 @@ TextStyle basicTextStyle = const TextStyle(
   fontFamily: 'Poppins',
   fontSize: 15,
   fontWeight: FontWeight.w500,
-  color: Color.fromARGB(255, 58, 58, 58)
+  color: Colors.white
 );
 
 TextStyle errorTextStyle = const TextStyle(

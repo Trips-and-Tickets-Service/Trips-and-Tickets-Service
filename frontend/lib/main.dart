@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import 'providers/provider.dart';
 import 'pages/welkome_page.dart';
+import 'pages/signin_page.dart';
+import 'pages/signup_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => WelkomePage(),
+        '/signin': (context) => SignInPage(),
+        '/signup': (context) => SignUpPage(),
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../data/styles.dart';
 
@@ -16,7 +17,7 @@ class _WelkomePageState extends State<WelkomePage> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('lib/assets/fon.png'),
+            image: AssetImage(kIsWeb ? 'lib/assets/fon1.png' : 'lib/assets/fon.png'),
             fit: BoxFit.cover,
           ),
         ),
