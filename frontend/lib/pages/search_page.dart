@@ -327,41 +327,51 @@ class _SearchPageState extends State<SearchPage> {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.end,
                                   children: [
-                                    Text('${ticket['price']} ₽'),
-                                    Text(
-                                      '${ticket['sold']}/${ticket['total']} sold',
-                                    ),
-                                    Padding(padding: const EdgeInsets.only(top: 4)),
-                                    if (ticket['sold'] < ticket['total'])
-                                      if (!boughtTickets.contains(ticket))
-                                        Container(
-                                          width: 80,
-                                          height: 20,
-                                          child: ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: WidgetStateProperty.all<Color>(
-                                                buttonColor,
-                                              ),
-                                              textStyle: WidgetStateProperty.all<TextStyle>(
-                                                buttonTextStyleMin,
-                                              ),
-                                              shape:
-                                                  WidgetStateProperty.all<RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10),
-                                                    ),
-                                                  ),
-                                              side: WidgetStateProperty.all<BorderSide>(
-                                                BorderSide(color: Colors.black, width: 1),
-                                                  ),
+                                    if ((ticket['sold'] >= ticket['total']) || boughtTickets.contains(ticket))
+                                      Column(
+                                        children: [
+                                          Text('${ticket['price']} ₽', style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Padding(padding: const EdgeInsets.only(top: 5)),
+                                          Text('${ticket['sold']}/${ticket['total']}'),
+                                        ],
+                                      ),
+                                    if ((ticket['sold'] < ticket['total']) && !boughtTickets.contains(ticket))
+                                      SizedBox(
+                                        width: 100,
+                                        height: 56,
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor: WidgetStateProperty.all<Color>(
+                                              buttonColor,
                                             ),
-                                            onPressed: () {
-                                              boughtTickets.add(ticket);
-                                              setState(() {});
-                                            },
-                                            child: Text('BUY', style: buttonTextStyleMin,),
+                                            textStyle: WidgetStateProperty.all<TextStyle>(
+                                              buttonTextStyleMin,
+                                            ),
+                                            shape:
+                                                WidgetStateProperty.all<RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                ),
+                                            side: WidgetStateProperty.all<BorderSide>(
+                                              BorderSide(color: Colors.black, width: 1),
+                                                ),
                                           ),
-                                        )
+                                          onPressed: () {
+                                            boughtTickets.add(ticket);
+                                            setState(() {});
+                                          },
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text('${ticket['price']} ₽', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                              Padding(padding: const EdgeInsets.only(top: 5)),
+                                              Text('${ticket['sold']}/${ticket['total']}'),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                   ],
                                 ),
                               ),

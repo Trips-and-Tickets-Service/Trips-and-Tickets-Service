@@ -79,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Padding(padding: const EdgeInsets.only(left: 15)),
-                                    SelectableText(tripsProvider.myName, style: basicTextStyle,),
+                                    Text(tripsProvider.myName, style: basicTextStyle,),
                                     Expanded(flex: 1, child: Text("")),
                                   ],
                                 ),
@@ -107,7 +107,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Padding(padding: const EdgeInsets.only(left: 15)),
-                                    SelectableText(tripsProvider.email, style: basicTextStyle,),
+                                    Text(tripsProvider.email, style: basicTextStyle,),
                                     Expanded(flex: 1, child: Text("")),
                                   ],
                                 ),

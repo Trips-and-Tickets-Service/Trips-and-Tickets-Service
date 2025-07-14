@@ -7,6 +7,20 @@ TextStyle titleStyle = const TextStyle(
   color: Colors.white
 );
 
+TextStyle titleStyleBlack = const TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 23,
+  fontWeight: FontWeight.w800,
+  color: Colors.black
+);
+
+TextStyle titleStyleBigBlack = const TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 26,
+  fontWeight: FontWeight.w800,
+  color: Colors.black
+);
+
 TextStyle buttonTextStyle = const TextStyle(
   fontFamily: 'Poppins',
   fontSize: 16,
@@ -82,6 +96,13 @@ TextStyle basicTextStyleMin = const TextStyle(
   color: Colors.white
 );
 
+TextStyle basicTextStyleBoldBlack = const TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 15,
+  fontWeight: FontWeight.w600,
+  color: Colors.black
+);
+
 Color buttonColor = Colors.white;
 
 Color buttonColorInvis = Color.fromARGB(20, 255, 255, 255);
@@ -97,3 +118,5 @@ Color pinkColor = Color.fromARGB(255, 236, 96, 163);
 Color fieldProfileColorInvis = Color.fromARGB(40, 255, 255, 255);
 
 Color logOutColor = Color.fromARGB(255, 255, 139, 139);
+
+Color backColor = Colors.black;

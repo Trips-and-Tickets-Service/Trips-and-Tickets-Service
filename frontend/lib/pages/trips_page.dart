@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:intl/intl.dart';
 
 import '../providers/provider.dart';
 import '../data/styles.dart';
@@ -135,13 +134,10 @@ class _TripsPageState extends State<TripsPage> {
                                 'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}',
                               ),
                               trailing: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.end,
                                 children: [
                                   Text('${ticket['price']} ₽'),
-                                  Text(
-                                    '${ticket['sold']}/${ticket['total']} sold',
-                                  ),
+                                  Padding(padding: const EdgeInsets.only(top: 5)),
+                                  Text('${ticket['sold']}/${ticket['total']}'),
                                 ],
                               ),
                             ),
