@@ -33,7 +33,7 @@ type (
 func LoadConfig() (*Config, error) {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("unable to load .env file: %e", err)
+		log.Printf("unable to load .env file: %e", err)
 	}
 
 	cfg := &Config{}

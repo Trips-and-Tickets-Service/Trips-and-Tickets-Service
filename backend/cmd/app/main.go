@@ -48,8 +48,8 @@ func main() {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=Europe/Moscow",
-		cfg.DB.Host, 5432, cfg.DB.User, cfg.DB.Password,
-		cfg.DB.DbName, false)
+		cfg.DB.Host, "5432", cfg.DB.User, cfg.DB.Password,
+		cfg.DB.DbName, "disable")
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	err = db.AutoMigrate(user.User{})
