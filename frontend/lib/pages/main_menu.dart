@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../pages/search_page.dart';
 import '../pages/planetarium_page.dart';
 import '../pages/trips_page.dart';
+import '../pages/settings_page.dart';
 import '../data/styles.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -15,9 +16,9 @@ class _MainNavigationState extends State<MainNavigation> {
 
   final List<Widget> _screens = [
     SearchPage(),
-    TripsPage(), // TripsPage(),
+    TripsPage(),
     PlanetariumPage(),
-    PlanetariumPage(), // SettingsPage(),
+    SettingsPage(),
   ];
 
   void _onItemTapped(int index) {

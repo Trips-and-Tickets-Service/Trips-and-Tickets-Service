@@ -67,6 +67,14 @@ TextStyle buttonTextStyleMin = const TextStyle(
   letterSpacing: 1.0,
 );
 
+TextStyle buttonTextStyleMedium = const TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 11,
+  fontWeight: FontWeight.w600,
+  color: Color.fromARGB(255, 58, 58, 58),
+  letterSpacing: 1.0,
+);
+
 Color buttonColor = Colors.white;
 
 Color buttonColorInvis = Color.fromARGB(20, 255, 255, 255);
@@ -78,3 +86,7 @@ Color dropdownColor = Color.fromARGB(255, 161, 127, 213);
 Color invisColor = Color.fromARGB(0, 0, 0, 0);
 
 Color pinkColor = Color.fromARGB(255, 236, 96, 163);
+
+Color fieldProfileColorInvis = Color.fromARGB(40, 255, 255, 255);
+
+Color logOutColor = Color.fromARGB(255, 255, 139, 139);

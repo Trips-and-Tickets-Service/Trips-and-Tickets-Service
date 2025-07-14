@@ -92,7 +92,7 @@ class _TripsPageState extends State<TripsPage> {
 
    @override
   Widget build(BuildContext context) {
-    final gameProvider = Provider.of<TripsProvider>(context);
+    final tripsProvider = Provider.of<TripsProvider>(context);
 
     return Scaffold(
       body: Container(

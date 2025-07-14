@@ -11,7 +11,7 @@ class TripsProvider extends ChangeNotifier {
   }
 
   // For manipulation with name of user
-  String _myName = 'HavNotName';
+  String _myName = 'HaveNotName';
   String get myName => _myName;
   set myName(String value) {
     _myName = value;
@@ -19,7 +19,7 @@ class TripsProvider extends ChangeNotifier {
   }
 
   // For manipulation with email of user
-  String _email = 'NavNotEmail';
+  String _email = 'NaveNotEmail';
   String get email => _email;
   set email(String value) {
     _email = value;
@@ -27,7 +27,7 @@ class TripsProvider extends ChangeNotifier {
   }
 
   // For manipulation with password of user
-  String _password = 'NavNotPass';
+  String _password = 'NaveNotPass';
   String get password => _password;
   set password(String value) {
     _password = value;

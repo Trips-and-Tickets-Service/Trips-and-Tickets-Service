@@ -32,7 +32,7 @@ class _WelkomePageState extends State<WelkomePage> {
                   onPressed: () {
                     Navigator.of(context).pushNamed('/mainmenu');
                   },
-                  icon: Icon(Icons.arrow_forward, size: 20, color: invisColor),),
+                  icon: Icon(Icons.arrow_forward, size: 40, color: invisColor),),
               ),
               const Expanded(flex: 2, child: Text("")),
               // logo
