@@ -19,7 +19,10 @@ type (
 	}
 
 	DB struct {
-		Url string `env:"DATABASE_URL,required"`
+		Host     string `env:"POSTGRES_HOST,required"`
+		User     string `env:"POSTGRES_USER,required"`
+		Password string `env:"POSTGRES_PASSWORD,required"`
+		DbName   string `env:"POSTGRES_DB,required"`
 	}
 
 	JWT struct {

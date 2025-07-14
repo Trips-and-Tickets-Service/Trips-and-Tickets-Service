@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
@@ -46,8 +47,10 @@ func main() {
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
-
-	db, err := gorm.Open(postgres.Open(cfg.DB.Url), &gorm.Config{})
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=Europe/Moscow",
+		cfg.DB.Host, 5432, cfg.DB.User, cfg.DB.Password,
+		cfg.DB.DbName, false)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	err = db.AutoMigrate(user.User{})
 	if err != nil {
