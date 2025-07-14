@@ -51,7 +51,9 @@ func main() {
 		cfg.DB.Host, "5432", cfg.DB.User, cfg.DB.Password,
 		cfg.DB.DbName, "disable")
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
+	if err != nil {
+		log.Fatal(err)
+	}
 	err = db.AutoMigrate(user.User{})
 	if err != nil {
 		log.Println("Error while migration:")
