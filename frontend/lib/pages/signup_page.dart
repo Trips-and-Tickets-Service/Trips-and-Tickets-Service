@@ -114,7 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 height: 115,
               ),
               const Expanded(flex: 2, child: Text("")),
-              Text("Sign up to Red7", style: titleStyle),
+              Text("Sign Up", style: titleStyle),
               const Expanded(flex: 1, child: Text("")),
               Container(
                 width: 352,

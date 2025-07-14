@@ -73,7 +73,7 @@ class _TripsPageState extends State<TripsPage> {
 
     // 🔧 Заглушка вместо запроса к backend
     tickets = List.generate(
-      10,
+      5,
       (index) => {
         'id': planets[index],
         'departurePlanet': planets[index],

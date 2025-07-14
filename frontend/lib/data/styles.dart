@@ -75,6 +75,13 @@ TextStyle buttonTextStyleMedium = const TextStyle(
   letterSpacing: 1.0,
 );
 
+TextStyle basicTextStyleMin = const TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 13,
+  fontWeight: FontWeight.w500,
+  color: Colors.white
+);
+
 Color buttonColor = Colors.white;
 
 Color buttonColorInvis = Color.fromARGB(20, 255, 255, 255);
