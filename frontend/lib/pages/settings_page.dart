@@ -21,6 +21,8 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
 
+    tripsProvider.loadMyPersonalInfo();
+
      return Scaffold(
       body: Container(
         decoration: BoxDecoration(
