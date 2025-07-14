@@ -37,6 +37,13 @@ class TripsProvider extends ChangeNotifier {
   String _languageCode = 'en';
   String get languageCode => _languageCode;
 
+  String _accessToken = 'NoneAccessToken';
+  String get accessToken => _accessToken;
+  set accessToken(String value) {
+    _accessToken = value;
+    notifyListeners();
+  }
+
   void toggleLanguage() {
     _languageCode = _languageCode == 'ru' ? 'en' : 'ru';
     notifyListeners();
@@ -54,6 +61,7 @@ class TripsProvider extends ChangeNotifier {
     await prefs.setInt('myID', _myID);
     await prefs.setString('email', _email);
     await prefs.setString('password', _password);
+    await prefs.setString('accessToken', _accessToken);
   }
 
   // For loading the information about the user
@@ -62,6 +70,8 @@ class TripsProvider extends ChangeNotifier {
     _myName = prefs.getString('myName') ?? 'HaveNotName';
     _myID = prefs.getInt('myID') ?? -1;
     _email = prefs.getString('email') ?? 'NavNotEmail';
+    _password = prefs.getString('password') ?? 'NavNotPass';
+    _accessToken = prefs.getString('accessToken') ?? 'NoneAccessToken';
     notifyListeners();
   }
 
@@ -72,10 +82,13 @@ class TripsProvider extends ChangeNotifier {
     await prefs.remove('myID');
     await prefs.remove('email');
     await prefs.remove('password');
+    await prefs.remove('accessToken');
     _myName = 'HaveNotName';
     _myID = -1;
     _email = 'NavNotEmail';
     _password = 'NavNotPass';
+    _accessToken = 'NoneAccessToken';
     notifyListeners();
   }
+  
 }

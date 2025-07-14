@@ -30,12 +30,13 @@ class _SignUpPageState extends State<SignUpPage> {
   String errPassword = '';
   String errRepeatedPassword = '';
   bool regSuccess = false;
+  String accessToken = '';
 
   bool obscure = true;
 
   int ID = -1;
 
-  bool logSuccess = true; // ⭐️ Вернуть false
+  bool logSuccess = false; // ⭐️ Вернуть false
 
   /// Sends a POST request to the server to register a new user.
   ///
@@ -51,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
       url,
       headers: {'Content-Type': 'application/json', 'accept': 'application/json'},
       body: jsonEncode({
-        'nickname': nickname,
+        'name': nickname,
         'email': email,
         'password': password,
       }),
@@ -61,6 +62,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (response.statusCode == 200 || response.statusCode == 201) {
       setState(() {
         regSuccess = true;
+        accessToken = responseBody['access_token'];
       });
     } else {
       setState(() {
@@ -325,14 +327,16 @@ class _SignUpPageState extends State<SignUpPage> {
                             } 
                             else {
                               // If all fields are filled and valid, send http-request to sign up
-                              // await signUp(controller.text, controller2.text, controller3.text);
+                              await signUp(controller.text, controller2.text, controller3.text);
                               // If sign up was successful, navigate to main menu
                               if (regSuccess) {
-                                // gameProvider.myID = ID;
-                                // gameProvider.myName = controller.text;
-                                // gameProvider.email = controller2.text;
-                                // gameProvider.password = controller3.text;
-                                // gameProvider.saveMyPersonalInfo();
+                                // TODO: раздекодировать из accessToken (ID)
+                                // tripsProvider.myID = ID;
+                                tripsProvider.myName = controller.text;
+                                tripsProvider.email = controller2.text;
+                                tripsProvider.password = controller3.text;
+                                tripsProvider.accessToken = accessToken;
+                                tripsProvider.saveMyPersonalInfo();
                                 Navigator.pushNamed(context, '/mainmenu');
                               }
                             }

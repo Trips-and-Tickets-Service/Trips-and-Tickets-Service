@@ -24,10 +24,11 @@ class _SignInPageState extends State<SignInPage> {
   // Fields for showing info and errors in the UI
   String postText = '';
   String errEmail = '';
-  bool logSuccess = true;
+  bool logSuccess = false;
   
   String nickname = 'None';
   int ID = -1;
+  String accessToken = 'NoneAccessToken';
 
   bool obscure = true; // ⭐️ Вернуть false
 
@@ -40,7 +41,7 @@ class _SignInPageState extends State<SignInPage> {
   /// to an error message.
   Future<void> signIn(String email, String password) async {
     // Use url from urls.dart file
-    final url = Uri.parse('TODO');
+    final url = Uri.parse(signInUrl);
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json', 'accept': 'application/json'},
@@ -55,6 +56,9 @@ class _SignInPageState extends State<SignInPage> {
     if (response.statusCode == 200) {
       setState(() {
         logSuccess = true;
+        // nickname = responseBody['nickname'];
+        // ID = responseBody['id'];
+        accessToken = responseBody['access_token'];
       });
     } else {
       setState(() {
@@ -229,14 +233,16 @@ class _SignInPageState extends State<SignInPage> {
                               return;
                             } else {
                               // If all fields are filled and email is valid, send http-request to sign in
-                              // await signIn(controller.text, controller2.text);
+                              await signIn(controller.text, controller2.text);
                               // If sign in was successful, navigate to main menu
                               if (logSuccess) {
-                                // gameProvider.myID = ID;
-                                // gameProvider.myName = nickname;
-                                // gameProvider.email = controller.text;
-                                // gameProvider.password = controller2.text;
-                                // gameProvider.saveMyPersonalInfo();
+                                // TODO: раздекодировать из accessToken (ID и nickname)
+                                // tripsProvider.myID = ID;
+                                // tripsProvider.myName = nickname;
+                                tripsProvider.email = controller.text;
+                                tripsProvider.password = controller2.text;
+                                tripsProvider.accessToken = accessToken;
+                                tripsProvider.saveMyPersonalInfo();
                                 Navigator.pushNamed(context, '/mainmenu');
                               }
                             }
