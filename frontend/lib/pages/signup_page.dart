@@ -35,6 +35,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   int ID = -1;
 
+  bool logSuccess = true; // ⭐️ Вернуть false
+
   /// Sends a POST request to the server to register a new user.
   ///
   /// If the registration is successful, it sets `regSuccess` to `true` and
@@ -85,7 +87,8 @@ class _SignUpPageState extends State<SignUpPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(padding: const EdgeInsets.only(top: 15)),
-              const Expanded(flex: 2, child: Text("")),
+              if (!kIsWeb)
+                const Expanded(flex: 2, child: Text("")),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

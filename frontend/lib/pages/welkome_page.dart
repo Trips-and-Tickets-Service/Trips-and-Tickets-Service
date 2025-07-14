@@ -25,7 +25,16 @@ class _WelkomePageState extends State<WelkomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Expanded(flex: 5, child: Text("")),
+              const Expanded(flex: 2, child: Text("")),
+              Expanded(
+                flex: 1, 
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/mainmenu');
+                  },
+                  icon: Icon(Icons.arrow_forward, size: 20, color: invisColor),),
+              ),
+              const Expanded(flex: 2, child: Text("")),
               // logo
               Image(
                 image: AssetImage('lib/assets/logo.png'),

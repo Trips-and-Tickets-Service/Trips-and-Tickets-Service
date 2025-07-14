@@ -24,12 +24,12 @@ class _SignInPageState extends State<SignInPage> {
   // Fields for showing info and errors in the UI
   String postText = '';
   String errEmail = '';
-  bool logSuccess = false;
+  bool logSuccess = true;
   
   String nickname = 'None';
   int ID = -1;
 
-  bool obscure = true;
+  bool obscure = true; // ⭐️ Вернуть false
 
   /// Sends a POST request to the server to sign in the user.
   ///
@@ -81,7 +81,8 @@ class _SignInPageState extends State<SignInPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(padding: const EdgeInsets.only(top: 15)),
-              const Expanded(flex: 2, child: Text("")),
+              if (!kIsWeb)
+                const Expanded(flex: 2, child: Text("")),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

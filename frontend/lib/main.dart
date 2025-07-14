@@ -5,6 +5,7 @@ import 'providers/provider.dart';
 import 'pages/welkome_page.dart';
 import 'pages/signin_page.dart';
 import 'pages/signup_page.dart';
+import 'pages/main_menu.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => WelkomePage(),
         '/signin': (context) => SignInPage(),
         '/signup': (context) => SignUpPage(),
+        '/mainmenu': (context) => MainNavigation(),
       },
     );
   }

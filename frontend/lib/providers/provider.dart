@@ -34,6 +34,19 @@ class TripsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _languageCode = 'en';
+  String get languageCode => _languageCode;
+
+  void toggleLanguage() {
+    _languageCode = _languageCode == 'ru' ? 'en' : 'ru';
+    notifyListeners();
+  }
+
+  void setLanguage(String code) {
+    _languageCode = code;
+    notifyListeners();
+  }
+
   // For saving the information about the user after registration/signin
   void saveMyPersonalInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

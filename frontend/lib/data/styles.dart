@@ -38,6 +38,13 @@ TextStyle basicTextStyle = const TextStyle(
   color: Colors.white
 );
 
+TextStyle basicTextStyleBlack = const TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 15,
+  fontWeight: FontWeight.w500,
+  color: Colors.black
+);
+
 TextStyle errorTextStyle = const TextStyle(
   fontFamily: 'Poppins',
   fontSize: 15,
@@ -45,8 +52,29 @@ TextStyle errorTextStyle = const TextStyle(
   color: Color.fromARGB(255, 249, 61, 61)
 );
 
+TextStyle basicTextStyleInvis = const TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 15,
+  fontWeight: FontWeight.w500,
+  color: Colors.black
+);
+
+TextStyle buttonTextStyleMin = const TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 10,
+  fontWeight: FontWeight.w600,
+  color: Color.fromARGB(255, 58, 58, 58),
+  letterSpacing: 1.0,
+);
+
 Color buttonColor = Colors.white;
 
 Color buttonColorInvis = Color.fromARGB(20, 255, 255, 255);
 
 Color whiteColor = Colors.white;
+
+Color dropdownColor = Color.fromARGB(255, 161, 127, 213);
+
+Color invisColor = Color.fromARGB(0, 0, 0, 0);
+
+Color pinkColor = Color.fromARGB(255, 236, 96, 163);
