@@ -131,9 +131,12 @@ class _SearchPageState extends State<SearchPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Expanded(flex: 1, child: Text("")),
+              if (kIsWeb)
+              Padding(padding: const EdgeInsets.only(top: 20)),
+              if (!kIsWeb)
+                const Expanded(flex: 1, child: Text("")),
               Expanded(
-                flex: 3,
+                flex: kIsWeb ? 2 : 3,
                 child: Column(
                   children: [
                     Center(
@@ -295,66 +298,76 @@ class _SearchPageState extends State<SearchPage> {
                   ],
                 ),
               ),
+              if (kIsWeb)
+                Padding(padding: const EdgeInsets.only(top: 20)),
               Expanded(
                 flex: 5,
                 child: SizedBox(
-                  width: 400,
+                  width: kIsWeb ? 600 : 400,
                     child: ListView.builder(
                       itemCount: tickets.length,
                       itemBuilder: (context, index) {
                         final ticket = tickets[index];
-                        return Card(
-                          child: ListTile(
-                            // leading: Icon(Icons.public),
-                            leading: Image(image: AssetImage(getIconOfPlanet(ticket['arrivalPlanet']))),
-                            title: Text(
-                              '${ticket['departurePlanet']} → ${ticket['arrivalPlanet']}',
-                            ),
-                            subtitle: Text(
-                              'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}',
-                            ),
-                            trailing: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.end,
-                              children: [
-                                Text('${ticket['price']} ₽'),
-                                Text(
-                                  '${ticket['sold']}/${ticket['total']} sold',
+                        return Column(
+                          children: [
+                            Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: ListTile(
+                                // leading: Icon(Icons.public),
+                                leading: Image(image: AssetImage(getIconOfPlanet(ticket['arrivalPlanet']))),
+                                title: Text(
+                                  '${ticket['departurePlanet']} → ${ticket['arrivalPlanet']}',
                                 ),
-                                Padding(padding: const EdgeInsets.only(top: 4)),
-                                if (ticket['sold'] < ticket['total'])
-                                  if (!boughtTickets.contains(ticket))
-                                    Container(
-                                      width: 80,
-                                      height: 20,
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                          backgroundColor: WidgetStateProperty.all<Color>(
-                                            buttonColor,
-                                          ),
-                                          textStyle: WidgetStateProperty.all<TextStyle>(
-                                            buttonTextStyleMin,
-                                          ),
-                                          shape:
-                                              WidgetStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
+                                subtitle: Text(
+                                  'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}',
+                                ),
+                                trailing: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.end,
+                                  children: [
+                                    Text('${ticket['price']} ₽'),
+                                    Text(
+                                      '${ticket['sold']}/${ticket['total']} sold',
+                                    ),
+                                    Padding(padding: const EdgeInsets.only(top: 4)),
+                                    if (ticket['sold'] < ticket['total'])
+                                      if (!boughtTickets.contains(ticket))
+                                        Container(
+                                          width: 80,
+                                          height: 20,
+                                          child: ElevatedButton(
+                                            style: ButtonStyle(
+                                              backgroundColor: WidgetStateProperty.all<Color>(
+                                                buttonColor,
                                               ),
-                                          side: WidgetStateProperty.all<BorderSide>(
-                                            BorderSide(color: Colors.black, width: 1),
+                                              textStyle: WidgetStateProperty.all<TextStyle>(
+                                                buttonTextStyleMin,
                                               ),
-                                        ),
-                                        onPressed: () {
-                                          boughtTickets.add(ticket);
-                                          setState(() {});
-                                        },
-                                        child: Text('BUY', style: buttonTextStyleMin,),
-                                      ),
-                                    )
-                              ],
+                                              shape:
+                                                  WidgetStateProperty.all<RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                    ),
+                                                  ),
+                                              side: WidgetStateProperty.all<BorderSide>(
+                                                BorderSide(color: Colors.black, width: 1),
+                                                  ),
+                                            ),
+                                            onPressed: () {
+                                              boughtTickets.add(ticket);
+                                              setState(() {});
+                                            },
+                                            child: Text('BUY', style: buttonTextStyleMin,),
+                                          ),
+                                        )
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
+                            Padding(padding: const EdgeInsets.only(top: 10)),
+                          ],
                         );
                       },
                     ),
