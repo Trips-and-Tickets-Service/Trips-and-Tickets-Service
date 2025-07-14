@@ -14,7 +14,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool darkMode = false;
-  String language = 'Русский';
   bool obscure = false;
 
   @override
@@ -22,6 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final tripsProvider = Provider.of<TripsProvider>(context);
 
     tripsProvider.loadMyPersonalInfo();
+    tripsProvider.loadLanguage();
 
      return Scaffold(
       body: Container(
@@ -62,8 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Row(
                               children: [
                                 Padding(padding: const EdgeInsets.only(left: 29)),
-                                Text("Nickname", style: basicTextStyle,),
-                                Padding(padding: const EdgeInsets.only(left: 250)),
+                                Text(tripsProvider.languageCode == "en" ? "Name" : "Имя", style: basicTextStyle,),
                               ],
                             ),
                             Padding(padding: const EdgeInsets.only(top: 7)),
@@ -90,8 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Row(
                               children: [
                                 Padding(padding: const EdgeInsets.only(left: 29)),
-                                Text("Email address", style: basicTextStyle,),
-                                Padding(padding: const EdgeInsets.only(left: 225)),
+                                Text(tripsProvider.languageCode == "en" ? "Email address" : "Электронная почта", style: basicTextStyle,),
                               ],
                             ),
                             Padding(padding: const EdgeInsets.only(top: 7)),
@@ -118,8 +116,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Row(
                               children: [
                                 Padding(padding: const EdgeInsets.only(left: 29)),
-                                Text("Password", style: basicTextStyle,),
-                                Padding(padding: const EdgeInsets.only(left: 250)),
+                                Text(tripsProvider.languageCode == "en" ? "Password" : "Пароль", style: basicTextStyle,),
                               ],
                             ),
                             Padding(padding: const EdgeInsets.only(top: 7)),
@@ -188,7 +185,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             const Expanded(flex: 1, child: Text(""),),
                             Icon(Icons.sunny, size: 60),
                             const Expanded(flex: 1, child: Text(""),),
-                            Text("Dark mode", textAlign: TextAlign.center,),
+                            Text(tripsProvider.languageCode == "en" ? "Dark mode" : "Тёмная тема", textAlign: TextAlign.center,),
                             const Expanded(flex: 1, child: Text(""),),
                           ],
                         ),
@@ -215,14 +212,14 @@ class _SettingsPageState extends State<SettingsPage> {
                               ),
                         ),
                         onPressed: () {
-                          
+                          tripsProvider.toggleLanguage();
                         },
                         child: Column(
                           children: [
                             const Expanded(flex: 1, child: Text(""),),
                             Icon(Icons.language, size: 60),
                             const Expanded(flex: 1, child: Text(""),),
-                            Text("Language", textAlign: TextAlign.center,),
+                            Text(tripsProvider.languageCode == "en" ? "Language" : "Язык", textAlign: TextAlign.center,),
                             const Expanded(flex: 1, child: Text(""),),
                           ],
                         ),
@@ -241,9 +238,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           textStyle: WidgetStateProperty.all<TextStyle>(
                             buttonTextStyleMedium,
                           ),
-                          // foregroundColor: WidgetStateProperty.all<Color>(
-                          //   ,
-                          // ),
                           shape:
                               WidgetStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -253,6 +247,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         onPressed: () {
                           tripsProvider.clearMyPersonalInfo();
+                          // tripsProvider.clearLanguage();
                           Navigator.pushNamed(context, '/');
                         },
                         child: Column(
@@ -260,7 +255,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             const Expanded(flex: 1, child: Text(""),),
                             Icon(Icons.logout, size: 60),
                             const Expanded(flex: 1, child: Text(""),),
-                            Text("LOG OUT", textAlign: TextAlign.center,),
+                            Text(tripsProvider.languageCode == "en" ? "LOG OUT" : "ВЫЙТИ", textAlign: TextAlign.center,),
                             const Expanded(flex: 1, child: Text(""),),
                           ],
                         ),

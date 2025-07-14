@@ -44,8 +44,23 @@ class TripsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleLanguage() {
+  void toggleLanguage() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     _languageCode = _languageCode == 'ru' ? 'en' : 'ru';
+    await prefs.setString('languageCode', _languageCode);
+    notifyListeners();
+  }
+
+  void loadLanguage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _languageCode = prefs.getString('languageCode') ?? 'en';
+    notifyListeners();
+  }
+
+  void clearLanguage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('languageCode');
+    _languageCode = 'en';
     notifyListeners();
   }
 

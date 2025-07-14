@@ -41,6 +41,8 @@ class _PlanetariumPageState extends State<PlanetariumPage> {
   
   @override
   Widget build(BuildContext context) {
+    final tripsProvider = Provider.of<TripsProvider>(context);
+    tripsProvider.loadLanguage();
     final languageCode = Provider.of<TripsProvider>(context).languageCode;
 
     return Scaffold(
@@ -67,13 +69,10 @@ class _PlanetariumPageState extends State<PlanetariumPage> {
                   child: FutureBuilder<List<Planet>>(
                     future: PlanetService.loadPlanets(),
                     builder: (context, snapshot) {
-                      // if (snapshot.connectionState == ConnectionState.waiting) {
-                      //   return Center(child: CircularProgressIndicator());
-                      // } else 
                       if (snapshot.hasError) {
-                        return Center(child: Text('Ошибка загрузки: ${snapshot.error}'));
+                        return Center(child: Text(tripsProvider.languageCode == "en" ? 'Error loading data' : 'Ошибка загрузки: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text('Нет данных'));
+                        return Center(child: Text(tripsProvider.languageCode == "en" ? 'No data' : 'Нет данных'));
                       }
                       
                       final planets = snapshot.data!;
@@ -223,236 +222,239 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
 
   @override
   Widget build(BuildContext context) {
-  return Dialog(
-    child: Container(
-      decoration: BoxDecoration(
-        color: whiteColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: whiteColor, width: 0.1),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Container(
-          width: 300,
-          height: 440,
-          decoration: BoxDecoration(
-            color: invisColor,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: whiteColor, width: 0.1),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(data['name'], style: titleStyleBigBlack,),
-                Expanded(flex: 2, child: Text("")),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text("G:", style: basicTextStyleBlack),
-                              Padding(padding: const EdgeInsets.only(left: 10)),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: buttonColorInvis,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: backColor, width: 1),
+    final tripsProvider = Provider.of<TripsProvider>(context);
+    tripsProvider.loadLanguage();
+
+    return Dialog(
+      child: Container(
+        decoration: BoxDecoration(
+          color: whiteColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: whiteColor, width: 0.1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Container(
+            width: 300,
+            height: 440,
+            decoration: BoxDecoration(
+              color: invisColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: whiteColor, width: 0.1),
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(data['name'], style: titleStyleBigBlack,),
+                  Expanded(flex: 2, child: Text("")),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text("G:", style: basicTextStyleBlack),
+                                Padding(padding: const EdgeInsets.only(left: 10)),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: buttonColorInvis,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: backColor, width: 1),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only( left: 5.0, right: 5.0),
+                                    child: Text("${data['gravity_m_s2']} m/s2", style: basicTextStyleBlack),
+                                  )
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                  child: Text("${data['gravity_m_s2']} m/s2", style: basicTextStyleBlack),
-                                )
-                              ),
-                            ],
-                          ),
-                          Padding(padding: const EdgeInsets.only(top: 10)),
-                          Row(
-                            children: [
-                              Text("T:", style: basicTextStyleBlack),
-                              Padding(padding: const EdgeInsets.only(left: 10)),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: buttonColorInvis,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: backColor, width: 1),
+                              ],
+                            ),
+                            Padding(padding: const EdgeInsets.only(top: 10)),
+                            Row(
+                              children: [
+                                Text("T:", style: basicTextStyleBlack),
+                                Padding(padding: const EdgeInsets.only(left: 10)),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: buttonColorInvis,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: backColor, width: 1),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only( left: 5.0, right: 5.0),
+                                    child: Text("${data['avg_temperature_c']} °C", style: basicTextStyleBlack),
+                                  ),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                  child: Text("${data['avg_temperature_c']} °C", style: basicTextStyleBlack),
+                              ],
+                            ),
+                            Padding(padding: const EdgeInsets.only(top: 10)),
+                            Row(
+                              children: [
+                                Text(tripsProvider.languageCode == "en" ? "Year:" : "Год:", style: basicTextStyleBlack),
+                                Padding(padding: const EdgeInsets.only(left: 10)),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: buttonColorInvis,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: backColor, width: 1),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only( left: 5.0, right: 5.0),
+                                    child: Text("${data['length_of_year_days']} d", style: basicTextStyleBlack),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Padding(padding: const EdgeInsets.only(top: 10)),
-                          Row(
-                            children: [
-                              Text("Year:", style: basicTextStyleBlack),
-                              Padding(padding: const EdgeInsets.only(left: 10)),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: buttonColorInvis,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: backColor, width: 1),
+                              ],
+                            ),
+                            Padding(padding: const EdgeInsets.only(top: 10)),
+                            Row(
+                              children: [
+                                Text(tripsProvider.languageCode == "en" ? "Moons:" : "Луны:", style: basicTextStyleBlack),
+                                Padding(padding: const EdgeInsets.only(left: 10)),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: buttonColorInvis,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: backColor, width: 1),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only( left: 5.0, right: 5.0),
+                                    child: Text("${data['moons']}", style: basicTextStyleBlack),
+                                  ),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                  child: Text("${data['length_of_year_days']} d", style: basicTextStyleBlack),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(padding: const EdgeInsets.only(top: 10)),
-                          Row(
-                            children: [
-                              Text("Moons:", style: basicTextStyleBlack),
-                              Padding(padding: const EdgeInsets.only(left: 10)),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: buttonColorInvis,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: backColor, width: 1),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                  child: Text("${data['moons']}", style: basicTextStyleBlack),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 6,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: [
-                              Text("R:", style: basicTextStyleBlack),
-                              Padding(padding: const EdgeInsets.only(left: 10)),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: buttonColorInvis,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: backColor, width: 1),
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              children: [
+                                Text("R:", style: basicTextStyleBlack),
+                                Padding(padding: const EdgeInsets.only(left: 10)),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: buttonColorInvis,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: backColor, width: 1),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only( left: 5.0, right: 5.0),
+                                    child: Text("${data['mean_radius_km']} km", style: basicTextStyleBlack,),
+                                  )
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                  child: Text("${data['mean_radius_km']} km", style: basicTextStyleBlack,),
-                                )
-                              ),
-                            ],
-                          ),
-                          Padding(padding: const EdgeInsets.only(top: 10)),
-                          Row(
-                            children: [
-                              Text("M:", style: basicTextStyleBlack),
-                              Padding(padding: const EdgeInsets.only(left: 10)),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: buttonColorInvis,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: backColor, width: 1),
+                              ],
+                            ),
+                            Padding(padding: const EdgeInsets.only(top: 10)),
+                            Row(
+                              children: [
+                                Text("M:", style: basicTextStyleBlack),
+                                Padding(padding: const EdgeInsets.only(left: 10)),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: buttonColorInvis,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: backColor, width: 1),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only( left: 5.0, right: 5.0),
+                                    child: Text("${data['mass_kg']} kg", style: basicTextStyleBlack,),
+                                  ),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                  child: Text("${data['mass_kg']} kg", style: basicTextStyleBlack,),
+                              ],
+                            ),
+                            Padding(padding: const EdgeInsets.only(top: 10)),
+                            Row(
+                              children: [
+                                Text(tripsProvider.languageCode == "en" ? "Day:" : "День:", style: basicTextStyleBlack),
+                                Padding(padding: const EdgeInsets.only(left: 10)),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: buttonColorInvis,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: backColor, width: 1),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only( left: 5.0, right: 5.0),
+                                    child: Text("${data['length_of_day_hours']} h", style: basicTextStyleBlack,),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Padding(padding: const EdgeInsets.only(top: 10)),
-                          Row(
-                            children: [
-                              Text("Day:", style: basicTextStyleBlack),
-                              Padding(padding: const EdgeInsets.only(left: 10)),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: buttonColorInvis,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: backColor, width: 1),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                  child: Text("${data['length_of_day_hours']} h", style: basicTextStyleBlack,),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(padding: const EdgeInsets.only(top: 35)),
-                        ],
+                              ],
+                            ),
+                            Padding(padding: const EdgeInsets.only(top: 35)),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Expanded(flex: 1, child: Text("")),
+                  Row(
+                    children: [
+                      Container(
+                        width: 97,
+                        height: 2,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    )
-                  ],
-                ),
-                Expanded(flex: 1, child: Text("")),
-                Row(
-                  children: [
-                    Container(
-                      width: 97,
-                      height: 2,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(20),
+                      Text(tripsProvider.languageCode == "en" ? " Atmosphere " : "  Атмосфера  ", style: basicTextStyleBoldBlack,),
+                      Container(
+                        width: 97,
+                        height: 2,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    ),
-                    Text(" Atmosphere ", style: basicTextStyleBoldBlack,),
-                    Container(
-                      width: 97,
-                      height: 2,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(20),
+                    ],
+                  ),
+                  Expanded(flex: 1, child: Text("")),
+                  Text("${data['atmosphere']}", style: basicTextStyleBlack,),
+                  Expanded(flex: 1, child: Text("")),
+                  Row(
+                    children: [
+                      Container(
+                        width: tripsProvider.languageCode == "en" ? 124 : 122,
+                        height: 2,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Expanded(flex: 1, child: Text("")),
-                Text("Atmosphere ${data['atmosphere']}", style: basicTextStyleBlack,),
-                Expanded(flex: 1, child: Text("")),
-                Row(
-                  children: [
-                    Container(
-                      width: 124,
-                      height: 2,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(20),
+                      Text(tripsProvider.languageCode == "en" ? " Facts " : " Факты ", style: basicTextStyleBoldBlack,),
+                      Container(
+                        width: tripsProvider.languageCode == "en" ? 124 : 121,
+                        height: 2,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    ),
-                    Text(" Facts ", style: basicTextStyleBoldBlack,),
-                    Container(
-                      width: 124,
-                      height: 2,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(20),
+                    ],
+                  ),
+                  Expanded(flex: 1, child: Text("")),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...List<Widget>.from(
+                        (data['facts'] as List).map((f) => Text('• $f', textAlign: TextAlign.start, style: basicTextStyleBlack,)),
                       ),
-                    ),
-                  ],
-                ),
-                Expanded(flex: 1, child: Text("")),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ...List<Widget>.from(
-                      (data['facts'] as List).map((f) => Text('• $f', textAlign: TextAlign.start, style: basicTextStyleBlack,)),
-                    ),
-                  ],
-                ),
-                Expanded(flex: 1, child: Text("")),
-              ],
+                    ],
+                  ),
+                  Expanded(flex: 1, child: Text("")),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 }

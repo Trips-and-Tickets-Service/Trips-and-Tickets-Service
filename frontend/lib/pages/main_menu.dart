@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/provider.dart';
 import '../pages/search_page.dart';
 import '../pages/planetarium_page.dart';
 import '../pages/trips_page.dart';
@@ -29,6 +31,9 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final tripsProvider = Provider.of<TripsProvider>(context);
+    tripsProvider.loadLanguage();
+
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -38,22 +43,22 @@ class _MainNavigationState extends State<MainNavigation> {
         selectedItemColor: pinkColor,
         unselectedItemColor: Colors.black54,
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            label: 'Search',
+            label: tripsProvider.languageCode == "en" ? 'Search' : 'Поиск',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.confirmation_num),
-            label: 'My trips',
+            label: tripsProvider.languageCode == "en" ? 'My trips' : 'Мои билеты',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.public),
-            label: 'Planetarium',
+            label: tripsProvider.languageCode == "en" ? 'Planetarium' : 'Планетарий',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Settings',
+            label: tripsProvider.languageCode == "en" ? 'Settings' : 'Настройки',
           ),
         ],
       ),

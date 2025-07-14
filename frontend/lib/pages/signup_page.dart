@@ -46,7 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
   /// If the registration fails due to an already used email, it sets `regSuccess`
   /// to `false` and updates `errEmail` with an error message.
 
-  Future<void> signUp(String nickname, String email, String password) async {
+  Future<void> signUp(String nickname, String email, String password, String language) async {
     final url = Uri.parse(signUpUrl);
     final response = await http.post(
       url,
@@ -67,7 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
     } else {
       setState(() {
         regSuccess = false;
-        errEmail = '(already in use)';
+        errEmail = language == 'en' ? 'already in use' : 'уже используется';
       });
     }
   }
@@ -75,6 +75,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
+    tripsProvider.loadLanguage();
 
     return Scaffold(
       body: Container(
@@ -88,6 +89,7 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              if (kIsWeb)
               Padding(padding: const EdgeInsets.only(top: 15)),
               if (!kIsWeb)
                 const Expanded(flex: 2, child: Text("")),
@@ -107,6 +109,17 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   const Expanded(flex: 1, child: Text("")),
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: IconButton(
+                      onPressed: () {
+                        tripsProvider.toggleLanguage();
+                      },
+                      icon: Icon(Icons.language, size: 34, color: buttonColor),
+                    ),
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 15)),
                 ],
               ),
               // Red7 logo
@@ -116,7 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 height: 115,
               ),
               const Expanded(flex: 2, child: Text("")),
-              Text("Sign Up", style: titleStyle),
+              Text(tripsProvider.languageCode == "en" ? "Sign Up" : "Регистрация", style: titleStyle),
               const Expanded(flex: 1, child: Text("")),
               Container(
                 width: 352,
@@ -133,7 +146,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(padding: const EdgeInsets.only(left: 47)),
-                        Text("Nickname", style: basicTextStyle,),
+                        Text(tripsProvider.languageCode == "en" ? "Name" : "Имя", style: basicTextStyle,),
                         const Expanded(flex: 1, child: Text("")),
                         Text(errNickname, style: errorTextStyle, textAlign: TextAlign.right),
                         Padding(padding: const EdgeInsets.only(right: 47)),
@@ -163,7 +176,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(padding: const EdgeInsets.only(left: 47)),
-                        Text("Email address", style: basicTextStyle),
+                        Text(tripsProvider.languageCode == "en" ? "Email address" : "Почта", style: basicTextStyle),
                         const Expanded(flex: 1, child: Text("")),
                         Text(errEmail, style: errorTextStyle, textAlign: TextAlign.right),
                         Padding(padding: const EdgeInsets.only(right: 47)),
@@ -193,7 +206,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(padding: const EdgeInsets.only(left: 47)),
-                        Text("Password", style: basicTextStyle),
+                        Text(tripsProvider.languageCode == "en" ? "Password" : "Пароль", style: basicTextStyle),
                         const Expanded(flex: 1, child: Text("")),
                         Text(errPassword, style: errorTextStyle, textAlign: TextAlign.right),
                         Padding(padding: const EdgeInsets.only(right: 47)),
@@ -235,7 +248,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(padding: const EdgeInsets.only(left: 47)),
-                        Text("Repeat password", style: basicTextStyle),
+                        Text(tripsProvider.languageCode == "en" ? "Repeat password" : "Повторите пароль", style: basicTextStyle),
                         const Expanded(flex: 1, child: Text("")),
                         Text(errRepeatedPassword, style: errorTextStyle, textAlign: TextAlign.right),
                         Padding(padding: const EdgeInsets.only(right: 47)),
@@ -293,41 +306,41 @@ class _SignUpPageState extends State<SignUpPage> {
                             // Check if all fields are filled
                             if (controller.text.isEmpty || controller2.text.isEmpty || controller3.text.isEmpty || controller4.text.isEmpty) {
                               setState(() {
-                                postText = 'All fields are required';
+                                postText = tripsProvider.languageCode == "en" ? 'All fields are required' : 'Все поля обязательны';
                               });
                               return;
                             }
                             // Check if nickname is valid
                             else if (controller.text.length > 16) {
                               setState(() {
-                                errNickname = '1-16 symbols';
+                                errNickname = tripsProvider.languageCode == "en" ? '1-16 symbols' : '1-16 символов';
                               });
                               return;
                             }
                             // Check if email is valid
                             else if (!EmailValidator.validate(controller2.text)) {
                               setState(() {
-                                errEmail = 'Invalid email';
+                                errEmail = tripsProvider.languageCode == "en" ? 'Invalid email' : 'Неверная почта';
                               });
                               return;
                             }
                             // Check if password is valid
                             else if (controller3.text.length > 16 || controller3.text.length < 6) {
                               setState(() {
-                                errPassword = '6-16 symbols';
+                                errPassword = tripsProvider.languageCode == "en" ? '6-16 symbols' : '6-16 символов';
                               });
                               return;
                             }
                             // Check if repeated password is valid
                             else if (controller3.text != controller4.text) {
                               setState(() {
-                                errRepeatedPassword = 'Different';
+                                errRepeatedPassword = tripsProvider.languageCode == "en" ? 'Different' : 'Различаются';
                               });
                               return;
                             } 
                             else {
                               // If all fields are filled and valid, send http-request to sign up
-                              await signUp(controller.text, controller2.text, controller3.text);
+                              await signUp(controller.text, controller2.text, controller3.text, tripsProvider.languageCode);
                               // If sign up was successful, navigate to main menu
                               if (regSuccess) {
                                 // TODO: раздекодировать из accessToken (ID)
@@ -341,7 +354,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               }
                             }
                           },
-                          child: const Text('SIGN  UP'),
+                          child: Text(tripsProvider.languageCode == "en" ? 'SIGN  UP' : 'РЕГИСТРАЦИЯ'),
                         ),
                       ),
                       Padding(padding: const EdgeInsets.only(top: 5)),

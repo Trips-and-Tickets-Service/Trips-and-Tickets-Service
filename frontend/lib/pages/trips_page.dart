@@ -21,47 +21,72 @@ class _TripsPageState extends State<TripsPage> {
   DateTime? departureDate;
   DateTime? arrivalDate;
 
-  List<String> planets = [
-    'Mercury',
-    'Venus',
-    'Earth',
-    'Mars',
-    'Jupiter',
-    'Saturn',
-    'Uranus',
-    'Neptune',
-    'Pluto',
-    'Moon',
-  ];
+  List<String> planets = [];
 
   List<Map<String, dynamic>> tickets = [];
 
   @override
   void initState() {
     super.initState();
+    getLanguage();
     _searchTickets();
   }
 
+  void getLanguage() {
+    final tripsProvider = Provider.of<TripsProvider>(context, listen: false);
+    tripsProvider.loadLanguage();
+
+    setState(() {
+      if (tripsProvider.languageCode == 'en') {
+      planets = [
+        'Mercury',
+        'Venus',
+        'Earth',
+        'Mars',
+        'Jupiter',
+        'Saturn',
+        'Uranus',
+        'Neptune',
+        'Pluto',
+        'Moon',
+      ];
+    } else if (tripsProvider.languageCode == 'ru') {
+      planets = [
+        'Меркурий',
+        'Венера',
+        'Земля',
+        'Марс',
+        'Юпитер',
+        'Сатурн',
+        'Уран',
+        'Нептун',
+        'Плутон',
+        'Луна',
+      ];
+    }
+    });
+  }
+
   String getIconOfPlanet(String planet) {
-    if (planet.toLowerCase() == 'mercury') {
+    if (planet.toLowerCase() == 'mercury' || planet.toLowerCase() == 'меркурий') {
       return 'lib/assets/planets/mercury.png';
-    } else if (planet.toLowerCase() == 'venus') {
+    } else if (planet.toLowerCase() == 'venus' || planet.toLowerCase() == 'венера') {
       return 'lib/assets/planets/venus.png';
-    } else if (planet.toLowerCase() == 'earth') {
+    } else if (planet.toLowerCase() == 'earth' || planet.toLowerCase() == 'земля') {
       return 'lib/assets/planets/earth.png';
-    } else if (planet.toLowerCase() == 'mars') {
+    } else if (planet.toLowerCase() == 'mars' || planet.toLowerCase() == 'марс') {
       return 'lib/assets/planets/mars.png';
-    } else if (planet.toLowerCase() == 'jupiter') {
+    } else if (planet.toLowerCase() == 'jupiter' || planet.toLowerCase() == 'юпитер') {
       return 'lib/assets/planets/jupiter.png';
-    } else if (planet.toLowerCase() == 'saturn') {
+    } else if (planet.toLowerCase() == 'saturn' || planet.toLowerCase() == 'сатурн') {
       return 'lib/assets/planets/saturn.png';
-    } else if (planet.toLowerCase() == 'uranus') {
+    } else if (planet.toLowerCase() == 'uranus' || planet.toLowerCase() == 'уран') {
       return 'lib/assets/planets/uranus.png';
-    } else if (planet.toLowerCase() == 'neptune') {
+    } else if (planet.toLowerCase() == 'neptune' || planet.toLowerCase() == 'нептун') {
       return 'lib/assets/planets/neptune.png';
-    } else if (planet.toLowerCase() == 'pluto') {
+    } else if (planet.toLowerCase() == 'pluto' || planet.toLowerCase() == 'плутон') {
       return 'lib/assets/planets/pluto.png';
-    } else if (planet.toLowerCase() == 'moon') {
+    } else if (planet.toLowerCase() == 'moon' || planet.toLowerCase() == 'луна') {
       return 'lib/assets/planets/moon.png';
     } else {
       return 'lib/assets/logo.png';
@@ -92,6 +117,7 @@ class _TripsPageState extends State<TripsPage> {
    @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
+    tripsProvider.loadLanguage();
 
     return Scaffold(
       body: Container(
@@ -130,8 +156,9 @@ class _TripsPageState extends State<TripsPage> {
                               title: Text(
                                 '${ticket['departurePlanet']} → ${ticket['arrivalPlanet']}',
                               ),
-                              subtitle: Text(
-                                'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}',
+                              subtitle: Text( tripsProvider.languageCode == "en" ?
+                                'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}'
+                                : 'Вылет: ${ticket['departureDate']}\nПрилет: ${ticket['arrivalDate']}',
                               ),
                               trailing: Column(
                                 children: [

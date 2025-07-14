@@ -83,7 +83,7 @@ TextStyle buttonTextStyleMin = const TextStyle(
 
 TextStyle buttonTextStyleMedium = const TextStyle(
   fontFamily: 'Poppins',
-  fontSize: 11,
+  fontSize: 10,
   fontWeight: FontWeight.w600,
   color: Color.fromARGB(255, 58, 58, 58),
   letterSpacing: 1.0,
@@ -101,6 +101,17 @@ TextStyle basicTextStyleBoldBlack = const TextStyle(
   fontSize: 15,
   fontWeight: FontWeight.w600,
   color: Colors.black
+);
+
+TextStyle neonTextStyle = const TextStyle(
+  fontSize: 40,
+  fontWeight: FontWeight.bold,
+  color: Colors.white,
+  shadows: [
+    Shadow(blurRadius: 20.0, color: Colors.blue, offset: Offset(0, 0)),
+    Shadow(blurRadius: 20.0, color: Colors.blue, offset: Offset(0, 0)),
+    Shadow(blurRadius: 30.0, color: Colors.lightBlue, offset: Offset(0, 0)),
+  ],
 );
 
 Color buttonColor = Colors.white;

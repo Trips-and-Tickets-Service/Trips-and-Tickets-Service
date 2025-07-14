@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:provider/provider.dart';
 
+import '../providers/provider.dart';
 import '../data/styles.dart';
 
 class WelkomePage extends StatefulWidget {
@@ -13,6 +15,9 @@ class WelkomePage extends StatefulWidget {
 class _WelkomePageState extends State<WelkomePage> {
   @override
   Widget build(BuildContext context) {
+    final tripsProvider = Provider.of<TripsProvider>(context);
+    tripsProvider.loadLanguage();
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -25,7 +30,33 @@ class _WelkomePageState extends State<WelkomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Expanded(flex: 2, child: Text("")),
+              if (kIsWeb)
+                Padding(padding: const EdgeInsets.only(top: 15)),
+              if (!kIsWeb)
+                const Expanded(flex: 1, child: Text("")),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(padding: const EdgeInsets.only(left: 15)),
+                  // Button to return to WelkomePage
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                  ),
+                  const Expanded(flex: 1, child: Text("")),
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: IconButton(
+                      onPressed: () {
+                        tripsProvider.toggleLanguage();
+                      },
+                      icon: Icon(Icons.language, size: 34, color: buttonColor),
+                    ),
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 15)),
+                ],
+              ),
               Expanded(
                 flex: 1, 
                 child: IconButton(
@@ -34,7 +65,7 @@ class _WelkomePageState extends State<WelkomePage> {
                   },
                   icon: Icon(Icons.arrow_forward, size: 40, color: invisColor),),
               ),
-              const Expanded(flex: 2, child: Text("")),
+              const Expanded(flex: 1, child: Text("")),
               // logo
               Image(
                 image: AssetImage('lib/assets/logo.png'),
@@ -42,7 +73,7 @@ class _WelkomePageState extends State<WelkomePage> {
                 height: 200,
               ),
               const Expanded(flex: 2, child: Text("")),
-              Text("Welcome!", style: titleStyle),
+              Text(tripsProvider.languageCode == "en" ? "Welcome!" : "Добро пожаловать!", style: titleStyle),
               const Expanded(flex: 1, child: Text("")),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -70,7 +101,7 @@ class _WelkomePageState extends State<WelkomePage> {
                         // Go to sign in page
                         Navigator.of(context).pushNamed('/signin');
                       },
-                      child: const Text('SIGN  IN'),
+                      child: Text(tripsProvider.languageCode == "en" ? 'SIGN  IN' : 'ВХОД'),
                     ),
                   ),
                   Padding(padding: EdgeInsets.only(top: 25)),
@@ -97,7 +128,7 @@ class _WelkomePageState extends State<WelkomePage> {
                         // Go to sign up page
                         Navigator.of(context).pushNamed('/signup');
                       },
-                      child: Text('SIGN  UP', style: buttonTextStyleInvis,),
+                      child: Text(tripsProvider.languageCode == "en" ? 'SIGN  UP' : 'РЕГИСТРАЦИЯ', style: buttonTextStyleInvis,),
                     ),
                   ),
                 ],
