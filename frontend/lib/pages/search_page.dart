@@ -200,7 +200,7 @@ class _SearchPageState extends State<SearchPage> {
   } else {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text('You are not logged in. ${response.body}. ${accessToken}')));
+    ).showSnackBar(SnackBar(content: Text('You are not logged in.')));
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
