@@ -2,7 +2,7 @@ name: Flutter Web CI/CD Pipeline
 
 on:
   push:
-    branches: [CI/CD]
+    branches: [CI/CD]  # Обратите внимание: имя ветки должно точно совпадать
   pull_request:
     branches: [CI/CD]
 
@@ -14,6 +14,8 @@ jobs:
       # Шаг 1: Клонирование репозитория
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          path: 'frontend'  # Указываем путь к Flutter-проекту
 
       # Шаг 2: Установка Flutter
       - name: Setup Flutter
@@ -22,27 +24,29 @@ jobs:
           channel: stable
           cache: true
 
-      # Шаг 3: Форматирование кода
+      # Шаг 3: Переходим в директорию проекта
+      - name: Change directory
+        run: cd frontend
+
+      # Шаг 4: Форматирование кода
       - name: Format code
         run: dart format .
 
-      # Шаг 4: Получение зависимостей
+      # Шаг 5: Получение зависимостей
       - name: Get dependencies
         run: flutter pub get
 
-      # Шаг 5: Запуск ВСЕХ тестов (включая ваш welkome_page_test.dart)
+      # Шаг 6: Запуск тестов
       - name: Run all tests
         run: flutter test
-        # Если нужно запустить только ваш тест:
-        # run: flutter test test/widgets/welkome_page_test.dart
 
-      # Шаг 6: Сборка проекта
+      # Шаг 7: Сборка проекта
       - name: Build for web
         run: flutter build web --release
 
-      # Шаг 7: Деплой
+      # Шаг 8: Деплой
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
+          publish_dir: frontend/build/web  # Указываем полный путь
