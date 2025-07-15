@@ -2,7 +2,7 @@ name: Flutter Web CI/CD Pipeline
 
 on:
   push:
-    branches: [CI/CD]  # Обратите внимание: имя ветки должно точно совпадать
+    branches: [CI/CD]
   pull_request:
     branches: [CI/CD]
 
@@ -20,11 +20,11 @@ jobs:
 
       - name: Format code
         run: dart format .
-        working-directory: ./frontend  # <-- Добавьте это
+        working-directory: ./frontend
 
       - name: Get dependencies
         run: flutter pub get
-        working-directory: ./frontend  # <-- Ключевое исправление!
+        working-directory: ./frontend
 
       - name: Run tests
         run: flutter test
