@@ -33,6 +33,10 @@ func (handler *UserHandler) SignUp(context *gin.Context) {
 		utils.SendErrorResponse(context, http.StatusBadRequest, err)
 		return
 	}
+	if err := utils.ValidateUser(request); err != nil {
+		utils.SendErrorResponse(context, http.StatusBadRequest, err)
+		return
+	}
 
 	accessToken, err := handler.service.RegisterUser(request)
 	if err != nil {
