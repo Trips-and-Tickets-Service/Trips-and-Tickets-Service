@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:your_app_name/pages/welkome_page.dart';
-import 'package:your_app_name/providers/provider.dart';
+import 'package:frontend/pages/welkome_page.dart';
+import 'package:frontend/providers/provider.dart';
 
 void main() {
   testWidgets('WelkomePage should display all main widgets', (WidgetTester tester) async {
