@@ -34,7 +34,7 @@ class _TripsPageState extends State<TripsPage> {
 
   void getLanguage() {
     final tripsProvider = Provider.of<TripsProvider>(context, listen: false);
-    tripsProvider.loadLanguage();
+    tripsProvider.loadLanguageAndLightMode();
 
     setState(() {
       if (tripsProvider.languageCode == 'en') {
@@ -117,7 +117,7 @@ class _TripsPageState extends State<TripsPage> {
    @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
-    tripsProvider.loadLanguage();
+    tripsProvider.loadLanguageAndLightMode();
 
     return Scaffold(
       body: Container(
@@ -148,23 +148,43 @@ class _TripsPageState extends State<TripsPage> {
                       return Column(
                         children: [
                           Card(
+                            color: tripsProvider.lightMode == 'dark' ? blackColor : whiteColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(
+                                color: whiteColor,
+                                width: 0.6,
+                              ),
                             ),
                             child: ListTile(
-                              leading: Image(image: AssetImage(getIconOfPlanet(ticket['arrivalPlanet']))),
+                              leading: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    width: 103,
+                                    height: 103,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: whiteColor,
+                                    ),
+                                  ),
+                                  Image(image: AssetImage(getIconOfPlanet(ticket['arrivalPlanet'])))
+                                ]
+                              ),
                               title: Text(
                                 '${ticket['departurePlanet']} → ${ticket['arrivalPlanet']}',
+                                style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor, fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text( tripsProvider.languageCode == "en" ?
                                 'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}'
                                 : 'Вылет: ${ticket['departureDate']}\nПрилет: ${ticket['arrivalDate']}',
+                                style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor),
                               ),
                               trailing: Column(
                                 children: [
-                                  Text('${ticket['price']} ₽'),
+                                  Text('${ticket['price']} ₽', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,)),
                                   Padding(padding: const EdgeInsets.only(top: 5)),
-                                  Text('${ticket['sold']}/${ticket['total']}'),
+                                  Text('${ticket['sold']}/${ticket['total']}', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,),),
                                 ],
                               ),
                             ),

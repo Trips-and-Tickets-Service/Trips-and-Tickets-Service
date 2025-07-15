@@ -16,7 +16,7 @@ class _WelkomePageState extends State<WelkomePage> {
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
-    tripsProvider.loadLanguage();
+    tripsProvider.loadLanguageAndLightMode();
 
     return Scaffold(
       body: Container(
@@ -51,7 +51,7 @@ class _WelkomePageState extends State<WelkomePage> {
                       onPressed: () {
                         tripsProvider.toggleLanguage();
                       },
-                      icon: Icon(Icons.language, size: 34, color: buttonColor),
+                      icon: Icon(Icons.language, size: 34, color: buttonColorW),
                     ),
                   ),
                   Padding(padding: const EdgeInsets.only(left: 15)),
@@ -85,7 +85,7 @@ class _WelkomePageState extends State<WelkomePage> {
                     child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all<Color>(
-                          buttonColor,
+                          buttonColorW,
                         ),
                         textStyle: WidgetStateProperty.all<TextStyle>(
                           buttonTextStyle,

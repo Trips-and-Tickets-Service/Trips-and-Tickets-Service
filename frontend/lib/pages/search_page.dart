@@ -39,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void getLanguage() {
     final tripsProvider = Provider.of<TripsProvider>(context, listen: false);
-    tripsProvider.loadLanguage();
+    tripsProvider.loadLanguageAndLightMode();
 
     setState(() {
       if (tripsProvider.languageCode == 'en') {
@@ -166,7 +166,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
-    tripsProvider.loadLanguage();
+    tripsProvider.loadLanguageAndLightMode();
 
     return Scaffold(
       body: Container(
@@ -197,7 +197,7 @@ class _SearchPageState extends State<SearchPage> {
                         decoration: BoxDecoration(
                           color: buttonColorInvis,
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: buttonColor, width: 1),
+                          border: Border.all(color: buttonColorW, width: 1),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
@@ -326,7 +326,7 @@ class _SearchPageState extends State<SearchPage> {
                               ElevatedButton(
                                 style: ButtonStyle(
                                   backgroundColor: WidgetStateProperty.all<Color>(
-                                    buttonColor,
+                                    tripsProvider.lightMode == 'dark' ? blackColor : buttonColorW,
                                   ),
                                   textStyle: WidgetStateProperty.all<TextStyle>(
                                     buttonTextStyle,
@@ -339,7 +339,9 @@ class _SearchPageState extends State<SearchPage> {
                                       ),
                                 ),
                                 onPressed: _searchTickets,
-                                child: Text(tripsProvider.languageCode == "en" ? 'SEARCH' : 'ПОИСК'),
+                                child: Text(tripsProvider.languageCode == "en" ? 'SEARCH' : 'ПОИСК',
+                                    style: tripsProvider.lightMode == 'dark' ?  buttonTextStyleInvis : null
+                                ),
                               ),
                             ],
                           ),
@@ -362,29 +364,37 @@ class _SearchPageState extends State<SearchPage> {
                         return Column(
                           children: [
                             Card(
+                              color: tripsProvider.lightMode == 'dark' ? blackColor : whiteColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(
+                                  color: whiteColor,
+                                  width: 0.6,
+                                ),
                               ),
                               child: ListTile(
                                 // leading: Icon(Icons.public),
                                 leading: Image(image: AssetImage(getIconOfPlanet(ticket['arrivalPlanet']))),
                                 title: Text(
                                   '${ticket['departurePlanet']} → ${ticket['arrivalPlanet']}',
+                                  style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor, fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text( tripsProvider.languageCode == "en" ?
-                                  'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}' :
-                                  'Вылет: ${ticket['departureDate']}\nПрилет: ${ticket['arrivalDate']}',
+                                  'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}'
+                                  : 'Вылет: ${ticket['departureDate']}\nПрилет: ${ticket['arrivalDate']}',
+                                  style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor),
                                 ),
                                 trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment:
                                       CrossAxisAlignment.end,
                                   children: [
                                     if ((ticket['sold'] >= ticket['total']) || boughtTickets.contains(ticket))
                                       Column(
                                         children: [
-                                          Text('${ticket['price']} ₽', style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text('${ticket['price']} ₽', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,)),
                                           Padding(padding: const EdgeInsets.only(top: 5)),
-                                          Text('${ticket['sold']}/${ticket['total']}'),
+                                          Text('${ticket['sold']}/${ticket['total']}', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,),),
                                         ],
                                       ),
                                     if ((ticket['sold'] < ticket['total']) && !boughtTickets.contains(ticket))
@@ -394,7 +404,7 @@ class _SearchPageState extends State<SearchPage> {
                                         child: ElevatedButton(
                                           style: ButtonStyle(
                                             backgroundColor: WidgetStateProperty.all<Color>(
-                                              buttonColor,
+                                              buttonColorW,
                                             ),
                                             textStyle: WidgetStateProperty.all<TextStyle>(
                                               buttonTextStyleMin,

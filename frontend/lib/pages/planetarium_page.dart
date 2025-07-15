@@ -42,7 +42,7 @@ class _PlanetariumPageState extends State<PlanetariumPage> {
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
-    tripsProvider.loadLanguage();
+    tripsProvider.loadLanguageAndLightMode();
     final languageCode = Provider.of<TripsProvider>(context).languageCode;
 
     return Scaffold(
@@ -223,14 +223,14 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
-    tripsProvider.loadLanguage();
+    tripsProvider.loadLanguageAndLightMode();
 
     return Dialog(
       child: Container(
         decoration: BoxDecoration(
-          color: whiteColor,
+          color: tripsProvider.lightMode == 'dark' ? blackColor : whiteColor,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: whiteColor, width: 0.1),
+          border: Border.all(color: whiteColor, width: 1),
         ),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -238,15 +238,13 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
             width: 300,
             height: 440,
             decoration: BoxDecoration(
-              color: invisColor,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: whiteColor, width: 0.1),
             ),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(data['name'], style: titleStyleBigBlack,),
+                  Text(data['name'], style: tripsProvider.lightMode == 'dark' ? titleStyleBigWhite : titleStyleBigBlack,),
                   Expanded(flex: 2, child: Text("")),
                   Row(
                     children: [
@@ -257,17 +255,17 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                           children: [
                             Row(
                               children: [
-                                Text("G:", style: basicTextStyleBlack),
+                                Text("G:", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                 Padding(padding: const EdgeInsets.only(left: 10)),
                                 Container(
                                   decoration: BoxDecoration(
                                     color: buttonColorInvis,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: backColor, width: 1),
+                                    border: Border.all(color: blackColor, width: 1),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                    child: Text("${data['gravity_m_s2']} m/s2", style: basicTextStyleBlack),
+                                    child: Text("${data['gravity_m_s2']} m/s2", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                   )
                                 ),
                               ],
@@ -275,17 +273,17 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                             Padding(padding: const EdgeInsets.only(top: 10)),
                             Row(
                               children: [
-                                Text("T:", style: basicTextStyleBlack),
+                                Text("T:", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                 Padding(padding: const EdgeInsets.only(left: 10)),
                                 Container(
                                   decoration: BoxDecoration(
                                     color: buttonColorInvis,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: backColor, width: 1),
+                                    border: Border.all(color: blackColor, width: 1),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                    child: Text("${data['avg_temperature_c']} °C", style: basicTextStyleBlack),
+                                    child: Text("${data['avg_temperature_c']} °C", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                   ),
                                 ),
                               ],
@@ -293,17 +291,17 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                             Padding(padding: const EdgeInsets.only(top: 10)),
                             Row(
                               children: [
-                                Text(tripsProvider.languageCode == "en" ? "Year:" : "Год:", style: basicTextStyleBlack),
+                                Text(tripsProvider.languageCode == "en" ? "Year:" : "Год:", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                 Padding(padding: const EdgeInsets.only(left: 10)),
                                 Container(
                                   decoration: BoxDecoration(
                                     color: buttonColorInvis,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: backColor, width: 1),
+                                    border: Border.all(color: blackColor, width: 1),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                    child: Text("${data['length_of_year_days']} d", style: basicTextStyleBlack),
+                                    child: Text("${data['length_of_year_days']} d", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                   ),
                                 ),
                               ],
@@ -311,17 +309,17 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                             Padding(padding: const EdgeInsets.only(top: 10)),
                             Row(
                               children: [
-                                Text(tripsProvider.languageCode == "en" ? "Moons:" : "Луны:", style: basicTextStyleBlack),
+                                Text(tripsProvider.languageCode == "en" ? "Moons:" : "Луны:", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                 Padding(padding: const EdgeInsets.only(left: 10)),
                                 Container(
                                   decoration: BoxDecoration(
                                     color: buttonColorInvis,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: backColor, width: 1),
+                                    border: Border.all(color: blackColor, width: 1),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                    child: Text("${data['moons']}", style: basicTextStyleBlack),
+                                    child: Text("${data['moons']}", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                   ),
                                 ),
                               ],
@@ -336,17 +334,17 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                           children: [
                             Row(
                               children: [
-                                Text("R:", style: basicTextStyleBlack),
+                                Text("R:", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                 Padding(padding: const EdgeInsets.only(left: 10)),
                                 Container(
                                   decoration: BoxDecoration(
                                     color: buttonColorInvis,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: backColor, width: 1),
+                                    border: Border.all(color: blackColor, width: 1),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                    child: Text("${data['mean_radius_km']} km", style: basicTextStyleBlack,),
+                                    child: Text("${data['mean_radius_km']} km", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack,),
                                   )
                                 ),
                               ],
@@ -354,17 +352,17 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                             Padding(padding: const EdgeInsets.only(top: 10)),
                             Row(
                               children: [
-                                Text("M:", style: basicTextStyleBlack),
+                                Text("M:", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                 Padding(padding: const EdgeInsets.only(left: 10)),
                                 Container(
                                   decoration: BoxDecoration(
                                     color: buttonColorInvis,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: backColor, width: 1),
+                                    border: Border.all(color: blackColor, width: 1),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                    child: Text("${data['mass_kg']} kg", style: basicTextStyleBlack,),
+                                    child: Text("${data['mass_kg']} kg", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack,),
                                   ),
                                 ),
                               ],
@@ -372,17 +370,17 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                             Padding(padding: const EdgeInsets.only(top: 10)),
                             Row(
                               children: [
-                                Text(tripsProvider.languageCode == "en" ? "Day:" : "День:", style: basicTextStyleBlack),
+                                Text(tripsProvider.languageCode == "en" ? "Day:" : "День:", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack),
                                 Padding(padding: const EdgeInsets.only(left: 10)),
                                 Container(
                                   decoration: BoxDecoration(
                                     color: buttonColorInvis,
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: backColor, width: 1),
+                                    border: Border.all(color: blackColor, width: 1),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only( left: 5.0, right: 5.0),
-                                    child: Text("${data['length_of_day_hours']} h", style: basicTextStyleBlack,),
+                                    child: Text("${data['length_of_day_hours']} h", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack,),
                                   ),
                                 ),
                               ],
@@ -400,23 +398,23 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                         width: 97,
                         height: 2,
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: tripsProvider.lightMode == 'dark' ? Colors.white : Colors.black,
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      Text(tripsProvider.languageCode == "en" ? " Atmosphere " : "  Атмосфера  ", style: basicTextStyleBoldBlack,),
+                      Text(tripsProvider.languageCode == "en" ? " Atmosphere " : "  Атмосфера  ", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack,),
                       Container(
                         width: 97,
                         height: 2,
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: tripsProvider.lightMode == 'dark' ? Colors.white : Colors.black,
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                     ],
                   ),
                   Expanded(flex: 1, child: Text("")),
-                  Text("${data['atmosphere']}", style: basicTextStyleBlack,),
+                  Text("${data['atmosphere']}", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack,),
                   Expanded(flex: 1, child: Text("")),
                   Row(
                     children: [
@@ -424,16 +422,16 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                         width: tripsProvider.languageCode == "en" ? 124 : 122,
                         height: 2,
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: tripsProvider.lightMode == 'dark' ? Colors.white : Colors.black,
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      Text(tripsProvider.languageCode == "en" ? " Facts " : " Факты ", style: basicTextStyleBoldBlack,),
+                      Text(tripsProvider.languageCode == "en" ? " Facts " : " Факты ", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack,),
                       Container(
                         width: tripsProvider.languageCode == "en" ? 124 : 121,
                         height: 2,
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: tripsProvider.lightMode == 'dark' ? Colors.white : Colors.black,
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
@@ -444,7 +442,7 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ...List<Widget>.from(
-                        (data['facts'] as List).map((f) => Text('• $f', textAlign: TextAlign.start, style: basicTextStyleBlack,)),
+                        (data['facts'] as List).map((f) => Text('• $f', textAlign: TextAlign.start, style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack,)),
                       ),
                     ],
                   ),

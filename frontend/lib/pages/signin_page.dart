@@ -71,7 +71,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
-    tripsProvider.loadLanguage();
+    tripsProvider.loadLanguageAndLightMode();
 
     return Scaffold(
       body: Container(
@@ -101,7 +101,7 @@ class _SignInPageState extends State<SignInPage> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.arrow_back_rounded, size: 44, color: buttonColor),
+                      icon: Icon(Icons.arrow_back_rounded, size: 44, color: buttonColorW),
                     ),
                   ),
                   const Expanded(flex: 1, child: Text("")),
@@ -112,7 +112,7 @@ class _SignInPageState extends State<SignInPage> {
                       onPressed: () {
                         tripsProvider.toggleLanguage();
                       },
-                      icon: Icon(Icons.language, size: 34, color: buttonColor),
+                      icon: Icon(Icons.language, size: 34, color: buttonColorW),
                     ),
                   ),
                   Padding(padding: const EdgeInsets.only(left: 15)),
@@ -133,7 +133,7 @@ class _SignInPageState extends State<SignInPage> {
                 decoration: BoxDecoration(
                   color: buttonColorInvis,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: buttonColor, width: 1),
+                  border: Border.all(color: buttonColorW, width: 1),
                 ),
                 child: Column(
                   children: [
@@ -215,7 +215,7 @@ class _SignInPageState extends State<SignInPage> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all<Color>(
-                              buttonColor,
+                              buttonColorW,
                             ),
                             textStyle: WidgetStateProperty.all<TextStyle>(
                               buttonTextStyle,

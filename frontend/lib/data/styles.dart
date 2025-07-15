@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../providers/provider.dart';
 
 TextStyle titleStyle = const TextStyle(
   fontFamily: 'Poppins',
@@ -21,11 +22,19 @@ TextStyle titleStyleBigBlack = const TextStyle(
   color: Colors.black
 );
 
-TextStyle buttonTextStyle = const TextStyle(
+TextStyle titleStyleBigWhite = const TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 26,
+  fontWeight: FontWeight.w800,
+  color: Colors.white
+);
+
+
+TextStyle buttonTextStyle = TextStyle(
   fontFamily: 'Poppins',
   fontSize: 16,
   fontWeight: FontWeight.w600,
-  color: Color.fromARGB(255, 58, 58, 58),
+  color: blackColor,
   letterSpacing: 1.0,
 );
 
@@ -52,11 +61,11 @@ TextStyle basicTextStyle = const TextStyle(
   color: Colors.white
 );
 
-TextStyle basicTextStyleBlack = const TextStyle(
+TextStyle basicTextStyleBlack = TextStyle(
   fontFamily: 'Poppins',
   fontSize: 15,
   fontWeight: FontWeight.w500,
-  color: Colors.black
+  color: Colors.black,
 );
 
 TextStyle errorTextStyle = const TextStyle(
@@ -81,11 +90,28 @@ TextStyle buttonTextStyleMin = const TextStyle(
   letterSpacing: 1.0,
 );
 
-TextStyle buttonTextStyleMedium = const TextStyle(
+TextStyle buttonTextStyleMedium = TextStyle(
   fontFamily: 'Poppins',
   fontSize: 10,
   fontWeight: FontWeight.w600,
-  color: Color.fromARGB(255, 58, 58, 58),
+  color: blackColor,
+  letterSpacing: 1.0,
+);
+
+TextStyle buttonTextStyleMediumWhite = TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 10,
+  fontWeight: FontWeight.w600,
+  color: Colors.white,
+  letterSpacing: 1.0,
+);
+
+
+TextStyle buttonTextStyleMediumLogOut = TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 10,
+  fontWeight: FontWeight.w600,
+  color: logOutColor,
   letterSpacing: 1.0,
 );
 
@@ -114,7 +140,7 @@ TextStyle neonTextStyle = const TextStyle(
   ],
 );
 
-Color buttonColor = Colors.white;
+Color buttonColorW = Colors.white;
 
 Color buttonColorInvis = Color.fromARGB(20, 255, 255, 255);
 
@@ -130,4 +156,28 @@ Color fieldProfileColorInvis = Color.fromARGB(40, 255, 255, 255);
 
 Color logOutColor = Color.fromARGB(255, 255, 139, 139);
 
-Color backColor = Colors.black;
+Color blackColor = Color.fromARGB(255, 28, 34, 43);
+
+class NeonBorderPainter extends CustomPainter {
+  final Color glowColor;
+  final double glowRadius;
+
+  NeonBorderPainter({this.glowColor = Colors.blue, this.glowRadius = 10});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = glowColor
+      ..maskFilter = MaskFilter.blur(BlurStyle.outer, glowRadius)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final radius = Radius.circular(20);
+    
+    canvas.drawRRect(RRect.fromRectAndRadius(rect, radius), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}

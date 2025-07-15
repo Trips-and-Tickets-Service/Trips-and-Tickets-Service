@@ -32,16 +32,16 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
-    tripsProvider.loadLanguage();
+    tripsProvider.loadLanguageAndLightMode();
 
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        backgroundColor: Colors.white,
+        backgroundColor: tripsProvider.lightMode == 'dark' ? Color.fromARGB(255, 28, 34, 43) : Colors.white,
         selectedItemColor: pinkColor,
-        unselectedItemColor: Colors.black54,
+        unselectedItemColor: tripsProvider.lightMode == 'dark' ? Colors.white54 : Colors.black54,
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
