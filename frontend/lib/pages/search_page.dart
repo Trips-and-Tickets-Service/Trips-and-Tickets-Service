@@ -29,9 +29,9 @@ class _SearchPageState extends State<SearchPage> {
 
   List<String> planets = [];
 
-  List<Ticket>? tickets = [];
+  List<Trip>? tickets = [];
 
-  List<Ticket> boughtTickets = [];
+  List<Trip> boughtTickets = [];
 
   @override
   void initState() {
@@ -147,21 +147,6 @@ class _SearchPageState extends State<SearchPage> {
       return;
     }
 
-    // 🔧 Заглушка вместо запроса к backend
-    // tickets = List.generate(
-    //   10,
-    //   (index) => {
-    //     'id': index,
-    //     'departurePlanet': departurePlanet,
-    //     'departureDate': DateFormat('yyyy-MM-dd').format(departureDate!),
-    //     'arrivalPlanet': arrivalPlanet,
-    //     'arrivalDate': DateFormat('yyyy-MM-dd').format(arrivalDate!),
-    //     'sold': 50 + index * 10 < 100 ? 50 + index * 10 : 100,
-    //     'total': 100,
-    //     'price': 4200 + index * 500,
-    //   },
-    // );
-
     tickets = await fetchTickets(
       departurePlanet: departurePlanet!,
       arrivalPlanet: arrivalPlanet!,
@@ -173,7 +158,7 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {});
   }
 
-  Future<List<Ticket>?> fetchTickets({
+  Future<List<Trip>?> fetchTickets({
   required String departurePlanet,
   required String arrivalPlanet,
   required DateTime departureDate,
@@ -196,7 +181,7 @@ class _SearchPageState extends State<SearchPage> {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => Ticket.fromJson(json)).toList();
+      return data.map((json) => Trip.fromJson(json)).toList();
     } else {
       ScaffoldMessenger.of(
         context,
@@ -456,8 +441,8 @@ class _SearchPageState extends State<SearchPage> {
                                   style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor, fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text( tripsProvider.languageCode == "en" ?
-                                  'Departure: ${ticket.departureTime}\nArrival: ${ticket.arrivalTime}'
-                                  : 'Вылет: ${ticket.departureTime}\nПрилет: ${ticket.arrivalTime}',
+                                  'Departure: ${ticket.departureTime.toString().substring(0, 10)}\nArrival: ${ticket.arrivalTime.toString().substring(0, 10)}'
+                                  : 'Вылет: ${ticket.departureTime.toString().substring(0, 10)}\nПрилет: ${ticket.arrivalTime.toString().substring(0, 10)}',
                                   style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor),
                                 ),
                                 trailing: Column(

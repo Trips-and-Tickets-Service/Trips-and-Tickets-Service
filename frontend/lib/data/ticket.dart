@@ -1,4 +1,4 @@
-class Ticket {
+class Trip {
   final int id;
   final String from;
   final String to;
@@ -8,7 +8,7 @@ class Ticket {
   final int maxSeats;
   final int price;
 
-  Ticket({
+  Trip({
     required this.id,
     required this.from,
     required this.to,
@@ -19,8 +19,8 @@ class Ticket {
     required this.price,
   });
 
-  factory Ticket.fromJson(Map<String, dynamic> json) {
-    return Ticket(
+  factory Trip.fromJson(Map<String, dynamic> json) {
+    return Trip(
       id: json['id'],
       from: json['from_planet'],
       to: json['to_planet'],
@@ -29,6 +29,19 @@ class Ticket {
       availableSeats: json['available_seats'],
       maxSeats: json['max_seats'],
       price: json['price'],
+    );
+  }
+}
+
+
+class TicketDetail {
+  final Trip trip;
+
+  TicketDetail({required this.trip});
+
+  factory TicketDetail.fromJson(Map<String, dynamic> json) {
+    return TicketDetail(
+      trip: Trip.fromJson(json['trip']),
     );
   }
 }
