@@ -10,4 +10,5 @@ type Trip struct {
 	ArrivalTime    time.Time `json:"arrival_time"`
 	AvailableSeats uint      `json:"available_seats"`
 	MaxSeats       uint      `json:"max_seats"`
+	Price          uint      `json:"price"`
 }
