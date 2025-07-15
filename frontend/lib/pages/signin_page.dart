@@ -39,7 +39,7 @@ class _SignInPageState extends State<SignInPage> {
   ///
   /// If the request fails, it sets `logSuccess` to `false` and sets `postText`
   /// to an error message.
-  Future<void> signIn(String email, String password) async {
+  Future<void> signIn(String email, String password, String language) async {
     // Use url from urls.dart file
     final url = Uri.parse(signInUrl);
     final response = await http.post(
@@ -63,7 +63,7 @@ class _SignInPageState extends State<SignInPage> {
     } else {
       setState(() {
         logSuccess = false;
-        postText = 'Invalid email or password';
+        postText = language == 'en' ? 'Invalid email or password' : 'Неверная почта или пароль';
       });
     }
   }
@@ -71,6 +71,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
+    tripsProvider.loadLanguageAndLightMode();
 
     return Scaffold(
       body: Container(
@@ -84,6 +85,7 @@ class _SignInPageState extends State<SignInPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              if (kIsWeb)
               Padding(padding: const EdgeInsets.only(top: 15)),
               if (!kIsWeb)
                 const Expanded(flex: 2, child: Text("")),
@@ -99,10 +101,21 @@ class _SignInPageState extends State<SignInPage> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.arrow_back_rounded, size: 44, color: buttonColor),
+                      icon: Icon(Icons.arrow_back_rounded, size: 44, color: buttonColorW),
                     ),
                   ),
                   const Expanded(flex: 1, child: Text("")),
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: IconButton(
+                      onPressed: () {
+                        tripsProvider.toggleLanguage();
+                      },
+                      icon: Icon(Icons.language, size: 34, color: buttonColorW),
+                    ),
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 15)),
                 ],
               ),
               // Show Logo
@@ -112,15 +125,15 @@ class _SignInPageState extends State<SignInPage> {
                 height: 115,
               ),
               const Expanded(flex: 2, child: Text("")),
-              Text("Sign In", style: titleStyle),
+              Text(tripsProvider.languageCode == "en" ? "Sign In" : "Вход", style: titleStyle),
               const Expanded(flex: 1, child: Text("")),
               Container(
                 width: 352,
-                height: 260,
+                height: 262,
                 decoration: BoxDecoration(
                   color: buttonColorInvis,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: buttonColor, width: 1),
+                  border: Border.all(color: buttonColorW, width: 1),
                 ),
                 child: Column(
                   children: [
@@ -129,7 +142,7 @@ class _SignInPageState extends State<SignInPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(padding: const EdgeInsets.only(left: 47)),
-                        Text("Email address", style: basicTextStyle,),
+                        Text(tripsProvider.languageCode == "en" ? "Email address" : "Почта", style: basicTextStyle,),
                         const Expanded(flex: 1, child: Text("")),
                         Text(errEmail, style: errorTextStyle, textAlign: TextAlign.right),
                         Padding(padding: const EdgeInsets.only(right: 47)),
@@ -159,7 +172,7 @@ class _SignInPageState extends State<SignInPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(padding: const EdgeInsets.only(left: 47)),
-                        Text("Password", style: basicTextStyle),
+                        Text(tripsProvider.languageCode == "en" ? "Password" : "Пароль", style: basicTextStyle),
                         const Expanded(flex: 1, child: Text("")),
                       ]
                     ),
@@ -202,7 +215,7 @@ class _SignInPageState extends State<SignInPage> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all<Color>(
-                              buttonColor,
+                              buttonColorW,
                             ),
                             textStyle: WidgetStateProperty.all<TextStyle>(
                               buttonTextStyle,
@@ -223,17 +236,17 @@ class _SignInPageState extends State<SignInPage> {
                             // Check if all fields are filled
                             if (controller.text.isEmpty || controller2.text.isEmpty) {
                               setState(() {
-                                postText = 'All fields are required';
+                                postText = tripsProvider.languageCode == "en" ? 'All fields are required' : 'Все поля обязательны';
                               });
                               return;
                             } else if (!EmailValidator.validate(controller.text)) { // Check if email is valid
                               setState(() {
-                                errEmail = 'Invalid email';
+                                errEmail = tripsProvider.languageCode == "en" ? 'Invalid email' : 'Неверная почта';
                               });
                               return;
                             } else {
                               // If all fields are filled and email is valid, send http-request to sign in
-                              await signIn(controller.text, controller2.text);
+                              await signIn(controller.text, controller2.text, tripsProvider.languageCode);
                               // If sign in was successful, navigate to main menu
                               if (logSuccess) {
                                 // TODO: раздекодировать из accessToken (ID и nickname)
@@ -247,7 +260,7 @@ class _SignInPageState extends State<SignInPage> {
                               }
                             }
                           },
-                          child: const Text('SIGN  IN'),
+                          child: Text(tripsProvider.languageCode == "en" ? 'SIGN  IN' : 'ВХОД'),
                         ),
                       ),
                       Padding(padding: const EdgeInsets.only(top: 5)),
