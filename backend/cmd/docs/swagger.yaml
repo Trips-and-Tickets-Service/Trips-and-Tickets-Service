@@ -1,8 +1,59 @@
 definitions:
+  models.Ticket:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      trip_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.Trip:
+    properties:
+      arrival_time:
+        type: string
+      available_seats:
+        type: integer
+      departure_time:
+        type: string
+      from_planet:
+        type: string
+      id:
+        type: integer
+      max_seats:
+        type: integer
+      price:
+        type: integer
+      tickets:
+        items:
+          $ref: '#/definitions/models.Ticket'
+        type: array
+      to_planet:
+        type: string
+    type: object
+  ticket.OrderTicketRequest:
+    properties:
+      trip_id:
+        type: integer
+    type: object
   user.AccessToken:
     properties:
       access_token:
         type: string
+      name:
+        type: string
+    type: object
+  user.LoginUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
     type: object
   utils.ErrorResponse:
     properties:
@@ -19,33 +70,173 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 paths:
-  /users/signin:
+  /signin:
     post:
       consumes:
       - application/json
-      description: signin user
+      description: Logs in a user and returns an access token
+      parameters:
+      - description: Login User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Access Token
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Sign in a user
+      tags:
+      - users
+  /tickets:
+    post:
+      consumes:
+      - application/json
+      description: Creates a ticket for a specified trip for the current user
+      parameters:
+      - description: Order Ticket Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ticket.OrderTicketRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/user.AccessToken'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
         "404":
-          description: Not Found
+          description: User Not Found
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.ErrorResponse'
-      summary: SignIn
+      summary: Create a new ticket
       tags:
-      - users
+      - tickets
+  /tickets/user:
+    get:
+      description: Retrieves a list of tickets associated with the currently authenticated
+        user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of user tickets
+          schema:
+            items:
+              $ref: '#/definitions/models.Ticket'
+            type: array
+        "404":
+          description: User Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Get tickets for the current user
+      tags:
+      - tickets
+  /trips:
+    get:
+      description: Retrieves a list of all trips
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of trips
+          schema:
+            items:
+              $ref: '#/definitions/models.Trip'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Get all trips
+      tags:
+      - trips
+  /trips/range:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of trips that fall within the given time range
+      parameters:
+      - in: query
+        name: arrival_time
+        type: integer
+      - in: query
+        name: departure_time
+        type: integer
+      - in: query
+        name: from
+        type: string
+      - in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of trips within the specified time range
+          schema:
+            items:
+              $ref: '#/definitions/models.Trip'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Get trips within a specified time range
+      tags:
+      - trips
+  /trips/user:
+    get:
+      description: Retrieves a list of trips associated with the tickets of the currently
+        authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of user trips
+          schema:
+            items:
+              $ref: '#/definitions/models.Trip'
+            type: array
+        "404":
+          description: User Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Get trips for the current user
+      tags:
+      - trips
   /users/signup:
     post:
       consumes:

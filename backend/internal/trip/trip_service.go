@@ -49,7 +49,7 @@ func randomlyGenerateTrips(repository *Repository) {
 					ArrivalTime:    time.Now().AddDate(0, 0, int(math.Abs(float64(k-i)))+3+x),
 					AvailableSeats: uint(availableSeats),
 					MaxSeats:       uint(maxSeats),
-					Price:          5000,
+					Price:          uint(5000 + rand.Intn(50)*100 - 2500),
 				})
 			}
 		}
@@ -92,6 +92,10 @@ func (s *Service) BookSeat(tripId uint) error {
 	}
 	trip.AvailableSeats--
 	trip.Price = trip.Price + trip.Price/10
+	err = s.repository.UpdateTrip(trip)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -1,7 +1,6 @@
 package trip
 
 import (
-	"encoding/json"
 	"errors"
 	"gorm.io/gorm"
 	"nexspace/main/internal/models"
@@ -44,13 +43,10 @@ func (r *Repository) GetTrip(tripId uint) (models.Trip, error) {
 }
 
 func (r *Repository) UpdateTrip(trip models.Trip) error {
-	var tripInterface map[string]interface{}
-	jsonTrip, _ := json.Marshal(trip)
-	err := json.Unmarshal(jsonTrip, &tripInterface)
-	if err != nil {
-		return err
+	if trip.AvailableSeats == 0 {
+		r.db.Model(&trip).Update("available_seats", "0")
 	}
-	err = r.db.Model(&models.Trip{}).Updates(tripInterface).Error
+	err := r.db.Save(&trip).Error
 	if err != nil {
 		return err
 	}

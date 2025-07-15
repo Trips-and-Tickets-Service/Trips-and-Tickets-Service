@@ -47,18 +47,16 @@ func (handler *UserHandler) SignUp(context *gin.Context) {
 }
 
 // SignIn godoc
-//
-//	@Summary		SignIn
-//	@Description	signin user
-//	@Tags			users
-//	@Accept			json
-//	@Produce		json
-//	@Param			body	user.LoginUserRequest	true	"User SignIn Request"
-//	@Success		200		{object}				user.AccessToken
-//	@Failure		400		{object}				utils.ErrorResponse
-//	@Failure		404		{object}				utils.ErrorResponse
-//	@Failure		500		{object}				utils.ErrorResponse
-//	@Router			/users/signin [post]
+// @Summary Sign in a user
+// @Description Logs in a user and returns an access token
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body user.LoginUserRequest true "Login User Request"
+// @Success 200 {string} string "Access Token"
+// @Failure 400 {object} utils.ErrorResponse "Bad Request"
+// @Failure 401 {object} utils.ErrorResponse "Unauthorized"
+// @Router /signin [post]
 func (handler *UserHandler) SignIn(context *gin.Context) {
 	var request user.LoginUserRequest
 	if err := context.ShouldBind(&request); err != nil {
