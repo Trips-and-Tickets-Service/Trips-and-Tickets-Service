@@ -24,7 +24,7 @@ jobs:
 
       # Шаг 3: Форматирование кода
       - name: Format code
-        run: flutter format .
+        run: dart format .
 
       # Шаг 4: Получение зависимостей
       - name: Get dependencies
