@@ -179,36 +179,62 @@ class _SearchPageState extends State<SearchPage> {
   required DateTime departureDate,
   required DateTime arrivalDate,
   required String accessToken
-}) async {
-  final uri = Uri.parse('http://localhost:8080/api/trips/schedule').replace(
-    queryParameters: {
-      'from': departurePlanet.toLowerCase(),
-      'to': arrivalPlanet.toLowerCase(),
-      'departure_time': (departureDate.millisecondsSinceEpoch ~/ 1000).toString(), // UNIX time (seconds)
-      'arrival_time': (arrivalDate.millisecondsSinceEpoch ~/ 1000).toString(),
-    },
-  );
+  }) async {
+    final uri = Uri.parse(searchUrl).replace(
+      queryParameters: {
+        'from': departurePlanet.toLowerCase(),
+        'to': arrivalPlanet.toLowerCase(),
+        'departure_time': (departureDate.millisecondsSinceEpoch ~/ 1000).toString(), // UNIX time (seconds)
+        'arrival_time': (arrivalDate.millisecondsSinceEpoch ~/ 1000).toString(),
+      },
+    );
 
-  final response = await http.get(
-    uri,
-    headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': accessToken},
-  );
+    final response = await http.get(
+      uri,
+      headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': accessToken},
+    );
 
-  if (response.statusCode == 200 || response.statusCode == 201) {
-    final List<dynamic> data = jsonDecode(response.body);
-    return data.map((json) => Ticket.fromJson(json)).toList();
-  } else {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('You are not logged in.')));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => Ticket.fromJson(json)).toList();
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('You are not logged in.')));
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    Navigator.pushNamed(context, '/');
-    return [];
-    
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      Navigator.pushNamed(context, '/');
+      return [];
+      
+    }
   }
-}
+
+  Future<void> buyTicket(int id, String accessToken) async {
+    // Use url from urls.dart file
+    final url = Uri.parse(buyUrl);
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': accessToken},
+      body: jsonEncode({
+        "trip_id": id,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Ticket has been bought.')));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('You are not logged in.')));
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      Navigator.pushNamed(context, '/');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -471,6 +497,7 @@ class _SearchPageState extends State<SearchPage> {
                                           ),
                                           onPressed: () {
                                             boughtTickets.add(ticket);
+                                            buyTicket(ticket.id, tripsProvider.accessToken);
                                             setState(() {});
                                           },
                                           child: Column(
