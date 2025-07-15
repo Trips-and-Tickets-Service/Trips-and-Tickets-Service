@@ -5,15 +5,15 @@
 
 ### A cross-platform mobile application with Flutter frontend and Go backend.:
 
-1) User Authentication: Secure login and registration system to manage individual user accounts.
+1) User Authentication JWT: Secure login and registration system to manage individual user accounts.
 
-2) The main ticket purchase screen where the user can select the departure point, destination and flight time. The bottom panel allows you to access the current page, purchased tickets, the planetarium (brief information about the planets) and settings.
+2) Search page: The main ticket purchase screen where the user can select the departure point, destination and flight time. The bottom panel allows you to access the current page, purchased tickets, the planetarium (brief information about the planets) and settings.
 
-3) Settings Page: allows the user to select a language, a topic, log out of the account, and view user information.
+3) My Tickets: allows you to view the tickets you have purchased
 
 4) Planetarium: allows you to study the climate and interesting facts about the planets to which we sell tickets
 
-5) My Tickets: allows you to view the tickets you have purchased
+5) Settings Page: allows the user to select a language, a light/dark mode, log out of the account, and view user information.
 
 6) Real-Time Multiplayer Infrastructure: A database system to store user accounts and manage flight.
 
@@ -23,6 +23,7 @@
 
 ### **Frontend**  
 📱 Flutter 3.32.5
+
 📦 Used resources:  
   - 'material'
   - 'provider': ^6.1.5
@@ -35,6 +36,7 @@
 
 ### **Backend**  
 🖥 Go 1.24.4  
+
 📦 Used resources:    
   - 'Gin': ^1.10.1
   - 'GORM': ^1.25.10
@@ -43,11 +45,11 @@
 
 ## Team member
 
-Bairamov Amir: Frontend developer
+**Bairamov Amir**: Frontend developer
 
-Gazizov Bulat: Backend developer
+**Gazizov Bulat**: Backend developer
 
-Permiakov Lev: Devops
+**Permiakov Lev**: DevOps
 
 ## Running with Docker
 
@@ -63,18 +65,38 @@ Permiakov Lev: Devops
 
  ## Main function
 
- 1. Demonstration of operation and validation during registration and account login
+ 1. Demonstration of operation and validation during registration and account login (GIFs)
  
   <img src="./Screenshots%20and%20GIFs/registration.gif" alt="Описание" width="800" />
 
- 2. Selecting and buying tickets, saving them in your account
+ 2. Selecting and buying tickets, saving them in your account(GIFs)
  
   <img src="./Screenshots%20and%20GIFs/ticket purchase.gif" alt="Описание" width="800" />
 
- 3. Application personalization dark/light theme, Russian/English
+ 3. Application personalization dark/light theme, Russian/English(GIFs)
  
   <img src="./Screenshots%20and%20GIFs/personalization.gif" alt="Описание" width="800" />
 
- 4. Information about the planet and background information about the weather on it
+ 4. Information about the planet and background information about the weather on it(GIFs)
  
  <img src="./Screenshots%20and%20GIFs/information about the planets.gif" alt="Описание" width="800" />
+
+## Presentation link
+
+Link:
+
+## Demo video link
+
+Link: 
+
+## Architecture diagrams
+
+Explanations:
+
+## Database with proper schema design
+
+Explanations:
+
+## API documentation
+
+Link:
