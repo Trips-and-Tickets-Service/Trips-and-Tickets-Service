@@ -2,9 +2,11 @@ package user
 
 import (
 	"errors"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"nexspace/main/internal/jwtservice"
+	"nexspace/main/internal/models"
 )
 
 type Service struct {
@@ -17,7 +19,7 @@ func NewUserService(repository *Repository, jwtService jwtservice.JWTService) *S
 }
 
 func (s *Service) RegisterUser(request RegisterUserRequest) (AccessToken, error) {
-	var existingUser User
+	var existingUser models.User
 	existingUser, err := s.repository.GetUserByEmail(request.Email)
 	if err != nil {
 		log.Print(err)
@@ -33,7 +35,7 @@ func (s *Service) RegisterUser(request RegisterUserRequest) (AccessToken, error)
 		return AccessToken{}, err
 	}
 
-	user := User{
+	user := models.User{
 		Name:     request.Name,
 		Email:    request.Email,
 		Password: string(password),
@@ -49,7 +51,7 @@ func (s *Service) RegisterUser(request RegisterUserRequest) (AccessToken, error)
 		return AccessToken{}, err
 	}
 
-	return AccessToken{AccessToken: token}, nil
+	return AccessToken{AccessToken: token, Name: user.Name}, nil
 }
 
 func (s *Service) LoginUser(request LoginUserRequest) (AccessToken, error) {
@@ -67,5 +69,18 @@ func (s *Service) LoginUser(request LoginUserRequest) (AccessToken, error) {
 	if err != nil {
 		return AccessToken{}, err
 	}
-	return AccessToken{AccessToken: token}, nil
+	return AccessToken{AccessToken: token, Name: user.Name}, nil
+}
+
+func (s *Service) GetCurrentUser(c *gin.Context) *models.User {
+	userId, exists := c.Get("user_id")
+	if !exists {
+		return nil
+	}
+
+	user, err := s.repository.GetUser(userId.(int))
+	if err != nil {
+		return nil
+	}
+	return &user
 }

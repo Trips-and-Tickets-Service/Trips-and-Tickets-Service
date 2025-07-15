@@ -13,6 +13,8 @@ import (
 	"nexspace/main/internal/handler"
 	"nexspace/main/internal/jwtservice"
 	"nexspace/main/internal/middleware"
+	"nexspace/main/internal/models"
+	"nexspace/main/internal/ticket"
 	trip "nexspace/main/internal/trip"
 	"nexspace/main/internal/user"
 	"nexspace/main/pkg/config"
@@ -55,7 +57,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = db.AutoMigrate(user.User{}, trip.Trip{})
+	err = db.AutoMigrate(models.User{}, models.Trip{}, models.Ticket{})
 	if err != nil {
 		log.Println("Error while migration:")
 		log.Fatal(err)
@@ -71,6 +73,9 @@ func main() {
 
 	tripService := trip.NewTripService(trip.NewTripRepository(db))
 	tripHandler := handler.NewTripHandler(tripService)
+
+	ticketService := ticket.NewTicketService(ticket.NewTicketRepository(db), tripService)
+	ticketHandler := handler.NewTicketHandler(ticketService, userService)
 
 	public := router.Group("/api")
 	{
@@ -88,6 +93,10 @@ func main() {
 
 		private.GET("/trips", tripHandler.GetTrips)
 		private.GET("/trips/schedule", tripHandler.GetTripsInRange)
+
+		private.GET("/tickets", ticketHandler.GetUserTickets)
+		private.GET("/users/trips", ticketHandler.GetUserTrips)
+		private.POST("/tickets", ticketHandler.CreateTicket)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

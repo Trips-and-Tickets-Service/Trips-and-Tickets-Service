@@ -13,4 +13,5 @@ type LoginUserRequest struct {
 
 type AccessToken struct {
 	AccessToken string `json:"access_token"`
+	Name        string `json:"name"`
 }
