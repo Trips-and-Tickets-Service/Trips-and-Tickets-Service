@@ -38,4 +38,10 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend/build/web  # Путь относительно корня репозитория
+          publish_dir: ./frontend/build/web
+          publish_branch: gh-pages
+          force_orphan: true
+          keep_files: false
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy Flutter Web: ${{ github.sha }}'
