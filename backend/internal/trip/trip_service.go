@@ -11,12 +11,13 @@ type Service struct {
 
 func NewTripService(repository *Repository) *Service {
 	repository.db.Create(&Trip{
-		From:           "Neptune",
-		To:             "Saturn",
-		DepartureTime:  time.Now().AddDate(0, 0, -1),
-		ArrivalTime:    time.Now().AddDate(0, 4, 0),
+		FromPlanet:           "neptune",
+		ToPlanet:             "saturn",
+		DepartureTime:  time.Now().AddDate(0, 0, 1),
+		ArrivalTime:    time.Now().AddDate(0, 0, 3),
 		AvailableSeats: 12,
 		MaxSeats:       25,
+		Price:          5000,
 	})
 	return &Service{repository: repository}
 }

@@ -16,7 +16,7 @@ func NewTripRepository(db *gorm.DB) *Repository {
 
 func (r *Repository) GetTripsByRouteAndTime(startTime time.Time, endTime time.Time, departure string, arrival string) ([]Trip, error) {
 	var trips []Trip
-	result := r.db.Find(&trips, "departure_time > ? AND arrival_time < ? AND from = ? AND to = ?", startTime, endTime, departure, arrival)
+	result := r.db.Find(&trips, "departure_time > ? AND arrival_time < ? AND from_planet = ? AND to_planet = ?", startTime, endTime, departure, arrival)
 	if result.Error != nil {
 		return trips, result.Error
 	}
