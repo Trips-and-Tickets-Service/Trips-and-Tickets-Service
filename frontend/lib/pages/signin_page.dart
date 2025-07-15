@@ -26,7 +26,7 @@ class _SignInPageState extends State<SignInPage> {
   String errEmail = '';
   bool logSuccess = false;
   
-  String nickname = 'None';
+  String name = 'HaveNotName';
   int ID = -1;
   String accessToken = 'NoneAccessToken';
 
@@ -59,6 +59,7 @@ class _SignInPageState extends State<SignInPage> {
         // nickname = responseBody['nickname'];
         // ID = responseBody['id'];
         accessToken = responseBody['access_token'];
+        name = responseBody['name'];
       });
     } else {
       setState(() {
@@ -255,6 +256,7 @@ class _SignInPageState extends State<SignInPage> {
                                 tripsProvider.email = controller.text;
                                 tripsProvider.password = controller2.text;
                                 tripsProvider.accessToken = accessToken;
+                                tripsProvider.myName = name;
                                 await tripsProvider.saveMyPersonalInfo();
                                 Navigator.pushNamed(context, '/mainmenu');
                               }

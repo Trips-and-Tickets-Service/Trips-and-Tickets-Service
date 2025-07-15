@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/provider.dart';
 import '../data/styles.dart';
 import '../data/urls.dart';
+import '../data/ticket.dart';
 
 class TripsPage extends StatefulWidget {
   const TripsPage({super.key});
@@ -23,18 +25,18 @@ class _TripsPageState extends State<TripsPage> {
 
   List<String> planets = [];
 
-  List<Map<String, dynamic>> tickets = [];
+  List<Trip>? tickets = [];
 
   @override
   void initState() {
     super.initState();
     getLanguage();
-    _searchTickets();
   }
 
   void getLanguage() {
     final tripsProvider = Provider.of<TripsProvider>(context, listen: false);
     tripsProvider.loadLanguageAndLightMode();
+    _searchTickets(tripsProvider.accessToken);
 
     setState(() {
       if (tripsProvider.languageCode == 'en') {
@@ -93,25 +95,33 @@ class _TripsPageState extends State<TripsPage> {
     }
   }
 
-  void _searchTickets() async {
+  void _searchTickets(String accessToken) async {
 
-    // 🔧 Заглушка вместо запроса к backend
-    tickets = List.generate(
-      5,
-      (index) => {
-        'id': planets[index],
-        'departurePlanet': planets[index],
-        'departureDate': '2025-07-14',
-        'arrivalPlanet': planets[(index + 1) % planets.length],
-        'arrivalDate': '2025-07-14',
-        'sold': 50 + index * 10 < 100 ? 50 + index * 10 : 100,
-        'total': 100,
-        'duration': '2д 4ч',
-        'price': 4200 + index * 500,
-      },
-    );
+    tickets = await getMyTrips(accessToken);
+  }
 
-    setState(() {});
+  Future<List<Trip>?> getMyTrips(String accessToken) async {
+    // Use url from urls.dart file
+    final url = Uri.parse(myTripsUrl);
+    final response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': accessToken});
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+
+      final List<dynamic> data = jsonDecode(response.body);
+
+      return data.map((json) => TicketDetail.fromJson(json).trip).toList();
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('You are not logged in.')));
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      Navigator.pushNamed(context, '/');
+      return [];
+    }
   }
 
    @override
@@ -142,9 +152,9 @@ class _TripsPageState extends State<TripsPage> {
                 child: SizedBox(
                   width: kIsWeb ? 600 : 400,
                   child: ListView.builder(
-                    itemCount: tickets.length,
+                    itemCount: tickets!.length,
                     itemBuilder: (context, index) {
-                      final ticket = tickets[index];
+                      final ticket = tickets![index];
                       return Column(
                         children: [
                           Card(
@@ -168,23 +178,23 @@ class _TripsPageState extends State<TripsPage> {
                                       color: whiteColor,
                                     ),
                                   ),
-                                  Image(image: AssetImage(getIconOfPlanet(ticket['arrivalPlanet'])))
+                                  Image(image: AssetImage(getIconOfPlanet(ticket.to)))
                                 ]
                               ),
                               title: Text(
-                                '${ticket['departurePlanet']} → ${ticket['arrivalPlanet']}',
+                                '${ticket.from} → ${ticket.to}',
                                 style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor, fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text( tripsProvider.languageCode == "en" ?
-                                'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}'
-                                : 'Вылет: ${ticket['departureDate']}\nПрилет: ${ticket['arrivalDate']}',
+                                'Departure: ${ticket.departureTime.toString().substring(0, 10)}\nArrival: ${ticket.arrivalTime.toString().substring(0, 10)}'
+                                : 'Вылет: ${ticket.departureTime.toString().substring(0, 10)}\nПрилет: ${ticket.arrivalTime.toString().substring(0, 10)}',
                                 style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor),
                               ),
                               trailing: Column(
                                 children: [
-                                  Text('${ticket['price']} ₽', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,)),
+                                  Text('${ticket.price} ₽', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,)),
                                   Padding(padding: const EdgeInsets.only(top: 5)),
-                                  Text('${ticket['sold']}/${ticket['total']}', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,),),
+                                  Text('${ticket.availableSeats}/${ticket.maxSeats}', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,),),
                                 ],
                               ),
                             ),
