@@ -165,6 +165,50 @@ class _SearchPageState extends State<SearchPage> {
   required DateTime arrivalDate,
   required String accessToken
   }) async {
+    if (departurePlanet == 'Меркурий') {
+      departurePlanet = 'Mercury';
+    } else if (departurePlanet == 'Венера') {
+      departurePlanet = 'Venus';
+    } else if (departurePlanet == 'Земля') {
+      departurePlanet = 'Earth';
+    } else if (departurePlanet == 'Марс') {
+      departurePlanet = 'Mars';
+    } else if (departurePlanet == 'Юпитер') {
+      departurePlanet = 'Jupiter';
+    } else if (departurePlanet == 'Сатурн') {
+      departurePlanet = 'Saturn';
+    } else if (departurePlanet == 'Уран') {
+      departurePlanet = 'Uranus';
+    } else if (departurePlanet == 'Нептун') {
+      departurePlanet = 'Neptune';
+    } else if (departurePlanet == 'Плутон') {
+      departurePlanet = 'Pluto';
+    } else if (departurePlanet == 'Луна') {
+      departurePlanet = 'Moon';
+    }
+
+    if (arrivalPlanet == 'Меркурий') {
+      arrivalPlanet = 'Mercury';
+    } else if (arrivalPlanet == 'Венера') {
+      arrivalPlanet = 'Venus';
+    } else if (arrivalPlanet == 'Земля') {
+      arrivalPlanet = 'Earth';
+    } else if (arrivalPlanet == 'Марс') {
+      arrivalPlanet = 'Mars';
+    } else if (arrivalPlanet == 'Юпитер') {
+      arrivalPlanet = 'Jupiter';
+    } else if (arrivalPlanet == 'Сатурн') {
+      arrivalPlanet = 'Saturn';
+    } else if (arrivalPlanet == 'Уран') {
+      arrivalPlanet = 'Uranus';
+    } else if (arrivalPlanet == 'Нептун') {
+      arrivalPlanet = 'Neptune';
+    } else if (arrivalPlanet == 'Плутон') {
+      arrivalPlanet = 'Pluto';
+    } else if (arrivalPlanet == 'Луна') {
+      arrivalPlanet = 'Moon';
+    }
+
     final uri = Uri.parse(searchUrl).replace(
       queryParameters: {
         'from': departurePlanet.toLowerCase(),

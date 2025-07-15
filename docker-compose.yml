@@ -41,7 +41,7 @@ services:
       dockerfile: Dockerfile
     container_name: nexspace_frontend
     ports:
-      - "8000:8000"
+      - "8000:80"
     environment:
       API_URL: http://backend:8080
     deploy:
