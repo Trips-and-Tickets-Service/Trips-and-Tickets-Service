@@ -22,63 +22,113 @@ class _SearchPageState extends State<SearchPage> {
   DateTime? departureDate;
   DateTime? arrivalDate;
 
-  List<String> planets = [
-    'Mercury',
-    'Venus',
-    'Earth',
-    'Mars',
-    'Jupiter',
-    'Saturn',
-    'Uranus',
-    'Neptune',
-    'Pluto',
-    'Moon',
-  ];
+  DateTime? pickedFrom;
+  DateTime? pickedTo;
+
+  List<String> planets = [];
 
   List<Map<String, dynamic>> tickets = [];
 
   List<Map<String, dynamic>> boughtTickets = [];
 
+  @override
+  void initState() {
+    super.initState();
+    getLanguage();
+  }
+
+  void getLanguage() {
+    final tripsProvider = Provider.of<TripsProvider>(context, listen: false);
+    tripsProvider.loadLanguageAndLightMode();
+
+    setState(() {
+      if (tripsProvider.languageCode == 'en') {
+      planets = [
+        'Mercury',
+        'Venus',
+        'Earth',
+        'Mars',
+        'Jupiter',
+        'Saturn',
+        'Uranus',
+        'Neptune',
+        'Pluto',
+        'Moon',
+      ];
+    } else if (tripsProvider.languageCode == 'ru') {
+      planets = [
+        'Меркурий',
+        'Венера',
+        'Земля',
+        'Марс',
+        'Юпитер',
+        'Сатурн',
+        'Уран',
+        'Нептун',
+        'Плутон',
+        'Луна',
+      ];
+    }
+    });
+  }
   
   String getIconOfPlanet(String planet) {
-    if (planet.toLowerCase() == 'mercury') {
+    if (planet.toLowerCase() == 'mercury' || planet.toLowerCase() == 'меркурий') {
       return 'lib/assets/planets/mercury.png';
-    } else if (planet.toLowerCase() == 'venus') {
+    } else if (planet.toLowerCase() == 'venus' || planet.toLowerCase() == 'венера') {
       return 'lib/assets/planets/venus.png';
-    } else if (planet.toLowerCase() == 'earth') {
+    } else if (planet.toLowerCase() == 'earth' || planet.toLowerCase() == 'земля') {
       return 'lib/assets/planets/earth.png';
-    } else if (planet.toLowerCase() == 'mars') {
+    } else if (planet.toLowerCase() == 'mars' || planet.toLowerCase() == 'марс') {
       return 'lib/assets/planets/mars.png';
-    } else if (planet.toLowerCase() == 'jupiter') {
+    } else if (planet.toLowerCase() == 'jupiter' || planet.toLowerCase() == 'юпитер') {
       return 'lib/assets/planets/jupiter.png';
-    } else if (planet.toLowerCase() == 'saturn') {
+    } else if (planet.toLowerCase() == 'saturn' || planet.toLowerCase() == 'сатурн') {
       return 'lib/assets/planets/saturn.png';
-    } else if (planet.toLowerCase() == 'uranus') {
+    } else if (planet.toLowerCase() == 'uranus' || planet.toLowerCase() == 'уран') {
       return 'lib/assets/planets/uranus.png';
-    } else if (planet.toLowerCase() == 'neptune') {
+    } else if (planet.toLowerCase() == 'neptune' || planet.toLowerCase() == 'нептун') {
       return 'lib/assets/planets/neptune.png';
-    } else if (planet.toLowerCase() == 'pluto') {
+    } else if (planet.toLowerCase() == 'pluto' || planet.toLowerCase() == 'плутон') {
       return 'lib/assets/planets/pluto.png';
-    } else if (planet.toLowerCase() == 'moon') {
+    } else if (planet.toLowerCase() == 'moon' || planet.toLowerCase() == 'луна') {
       return 'lib/assets/planets/moon.png';
     } else {
       return 'lib/assets/logo.png';
     }
   }
 
-  Future<void> _pickDate(BuildContext context, bool isDeparture) async {
-    DateTime? picked = await showDatePicker(
+  Future<void> _pickDateFrom(BuildContext context, bool isDeparture) async {
+    pickedFrom = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2024),
-      lastDate: DateTime(2030),
+      firstDate: DateTime.now(),
+      lastDate: pickedTo ?? DateTime(2030),
+      // lastDate: DateTime(2030),
     );
-    if (picked != null) {
+    if (pickedFrom != null) {
       setState(() {
         if (isDeparture)
-          departureDate = picked;
+          departureDate = pickedFrom;
         else
-          arrivalDate = picked;
+          arrivalDate = pickedFrom;
+      });
+    }
+  }
+
+  Future<void> _pickDateTo(BuildContext context, bool isDeparture) async {
+    pickedTo = await showDatePicker(
+      context: context,
+      initialDate: pickedFrom ?? DateTime.now(),
+      firstDate: pickedFrom ?? DateTime.now(),
+      lastDate: DateTime(2030),
+    );
+    if (pickedTo != null) {
+      setState(() {
+        if (isDeparture)
+          departureDate = pickedTo;
+        else
+          arrivalDate = pickedTo;
       });
     }
   }
@@ -116,6 +166,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
+    tripsProvider.loadLanguageAndLightMode();
 
     return Scaffold(
       body: Container(
@@ -146,7 +197,7 @@ class _SearchPageState extends State<SearchPage> {
                         decoration: BoxDecoration(
                           color: buttonColorInvis,
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: buttonColor, width: 1),
+                          border: Border.all(color: buttonColorW, width: 1),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
@@ -171,7 +222,7 @@ class _SearchPageState extends State<SearchPage> {
                                       onChanged: (value) =>
                                           setState(() => departurePlanet = value),
                                       decoration: InputDecoration(
-                                        labelText: 'From',
+                                        labelText: tripsProvider.languageCode == "en" ? 'From' : 'Откуда',
                                         labelStyle: basicTextStyle,
                                         border: OutlineInputBorder( // Стандартная рамка
                                           borderSide: BorderSide(color: Colors.white, width: 2),
@@ -198,7 +249,7 @@ class _SearchPageState extends State<SearchPage> {
                                       onChanged: (value) =>
                                           setState(() => arrivalPlanet = value),
                                       decoration: InputDecoration(
-                                        labelText: 'To',
+                                        labelText: tripsProvider.languageCode == "en" ? 'To' : 'Куда',
                                         labelStyle: basicTextStyle,
                                         border: OutlineInputBorder( // Стандартная рамка
                                           borderSide: BorderSide(color: Colors.white),
@@ -228,10 +279,10 @@ class _SearchPageState extends State<SearchPage> {
                                           BorderSide(color: whiteColor, width: 1),
                                         ),
                                       ),
-                                      onPressed: () => _pickDate(context, true),
+                                      onPressed: () => _pickDateFrom(context, true),
                                       child: Text(
                                         departureDate == null
-                                            ? 'Departure date'
+                                            ? (tripsProvider.languageCode == "en" ? 'Departure date' : 'Дата вылета')
                                             : DateFormat(
                                                 'dd.MM.yyyy',
                                               ).format(departureDate!),
@@ -257,10 +308,10 @@ class _SearchPageState extends State<SearchPage> {
                                           BorderSide(color: whiteColor, width: 1),
                                         ),
                                       ),
-                                      onPressed: () => _pickDate(context, false),
+                                      onPressed: () => _pickDateTo(context, false),
                                       child: Text(
                                         arrivalDate == null
-                                            ? 'Arrival date'
+                                            ? (tripsProvider.languageCode == "en" ? 'Arrival date' : 'Дата прилета')
                                             : DateFormat(
                                                 'dd.MM.yyyy',
                                               ).format(arrivalDate!),
@@ -275,7 +326,7 @@ class _SearchPageState extends State<SearchPage> {
                               ElevatedButton(
                                 style: ButtonStyle(
                                   backgroundColor: WidgetStateProperty.all<Color>(
-                                    buttonColor,
+                                    tripsProvider.lightMode == 'dark' ? blackColor : buttonColorW,
                                   ),
                                   textStyle: WidgetStateProperty.all<TextStyle>(
                                     buttonTextStyle,
@@ -288,7 +339,9 @@ class _SearchPageState extends State<SearchPage> {
                                       ),
                                 ),
                                 onPressed: _searchTickets,
-                                child: Text('SEARCH'),
+                                child: Text(tripsProvider.languageCode == "en" ? 'SEARCH' : 'ПОИСК',
+                                    style: tripsProvider.lightMode == 'dark' ?  buttonTextStyleInvis : null
+                                ),
                               ),
                             ],
                           ),
@@ -311,57 +364,76 @@ class _SearchPageState extends State<SearchPage> {
                         return Column(
                           children: [
                             Card(
+                              color: tripsProvider.lightMode == 'dark' ? blackColor : whiteColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(
+                                  color: whiteColor,
+                                  width: 0.6,
+                                ),
                               ),
                               child: ListTile(
                                 // leading: Icon(Icons.public),
                                 leading: Image(image: AssetImage(getIconOfPlanet(ticket['arrivalPlanet']))),
                                 title: Text(
                                   '${ticket['departurePlanet']} → ${ticket['arrivalPlanet']}',
+                                  style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor, fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text(
-                                  'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}',
+                                subtitle: Text( tripsProvider.languageCode == "en" ?
+                                  'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}'
+                                  : 'Вылет: ${ticket['departureDate']}\nПрилет: ${ticket['arrivalDate']}',
+                                  style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor),
                                 ),
                                 trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment:
                                       CrossAxisAlignment.end,
                                   children: [
-                                    Text('${ticket['price']} ₽'),
-                                    Text(
-                                      '${ticket['sold']}/${ticket['total']} sold',
-                                    ),
-                                    Padding(padding: const EdgeInsets.only(top: 4)),
-                                    if (ticket['sold'] < ticket['total'])
-                                      if (!boughtTickets.contains(ticket))
-                                        Container(
-                                          width: 80,
-                                          height: 20,
-                                          child: ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: WidgetStateProperty.all<Color>(
-                                                buttonColor,
-                                              ),
-                                              textStyle: WidgetStateProperty.all<TextStyle>(
-                                                buttonTextStyleMin,
-                                              ),
-                                              shape:
-                                                  WidgetStateProperty.all<RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10),
-                                                    ),
-                                                  ),
-                                              side: WidgetStateProperty.all<BorderSide>(
-                                                BorderSide(color: Colors.black, width: 1),
-                                                  ),
+                                    if ((ticket['sold'] >= ticket['total']) || boughtTickets.contains(ticket))
+                                      Column(
+                                        children: [
+                                          Text('${ticket['price']} ₽', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,)),
+                                          Padding(padding: const EdgeInsets.only(top: 5)),
+                                          Text('${ticket['sold']}/${ticket['total']}', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,),),
+                                        ],
+                                      ),
+                                    if ((ticket['sold'] < ticket['total']) && !boughtTickets.contains(ticket))
+                                      SizedBox(
+                                        width: 100,
+                                        height: 48,
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor: WidgetStateProperty.all<Color>(
+                                              buttonColorW,
                                             ),
-                                            onPressed: () {
-                                              boughtTickets.add(ticket);
-                                              setState(() {});
-                                            },
-                                            child: Text('BUY', style: buttonTextStyleMin,),
+                                            textStyle: WidgetStateProperty.all<TextStyle>(
+                                              buttonTextStyleMin,
+                                            ),
+                                            shape:
+                                                WidgetStateProperty.all<RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                ),
+                                            side: WidgetStateProperty.all<BorderSide>(
+                                              BorderSide(color: Colors.black, width: 1),
+                                                ),
                                           ),
-                                        )
+                                          onPressed: () {
+                                            boughtTickets.add(ticket);
+                                            setState(() {});
+                                          },
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text('${ticket['price']} ₽', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                              Padding(padding: const EdgeInsets.only(top: 5)),
+                                              Text('${ticket['sold']}/${ticket['total']}'),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                   ],
                                 ),
                               ),

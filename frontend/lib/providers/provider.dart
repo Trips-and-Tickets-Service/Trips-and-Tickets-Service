@@ -37,6 +37,9 @@ class TripsProvider extends ChangeNotifier {
   String _languageCode = 'en';
   String get languageCode => _languageCode;
 
+  String _lightMode = 'light';
+  String get lightMode => _lightMode;
+
   String _accessToken = 'NoneAccessToken';
   String get accessToken => _accessToken;
   set accessToken(String value) {
@@ -44,8 +47,24 @@ class TripsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleLanguage() {
+  void toggleLanguage() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     _languageCode = _languageCode == 'ru' ? 'en' : 'ru';
+    await prefs.setString('languageCode', _languageCode);
+    notifyListeners();
+  }
+
+  void toggleLightMode() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _lightMode = _lightMode == 'light' ? 'dark' : 'light';
+    await prefs.setString('lightMode', _lightMode);
+    notifyListeners();
+  }
+
+    void loadLanguageAndLightMode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _languageCode = prefs.getString('languageCode') ?? 'en';
+    _lightMode = prefs.getString('lightMode') ?? 'light';
     notifyListeners();
   }
 

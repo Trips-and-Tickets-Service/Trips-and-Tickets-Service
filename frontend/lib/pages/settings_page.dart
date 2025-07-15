@@ -14,7 +14,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool darkMode = false;
-  String language = 'Русский';
   bool obscure = false;
 
   @override
@@ -22,6 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final tripsProvider = Provider.of<TripsProvider>(context);
 
     tripsProvider.loadMyPersonalInfo();
+    tripsProvider.loadLanguageAndLightMode();
 
      return Scaffold(
       body: Container(
@@ -51,19 +51,19 @@ class _SettingsPageState extends State<SettingsPage> {
                       decoration: BoxDecoration(
                         color: buttonColorInvis,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: buttonColor, width: 1),
+                        border: Border.all(color:  buttonColorW, width:  1),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
                           children: [
-                            Icon(Icons.account_circle_rounded, size: 200, color: buttonColor,),
+                            Icon(Icons.account_circle_rounded, size: 200, color: tripsProvider.lightMode == "light" ? buttonColorW : blackColor,),
                             Padding(padding: const EdgeInsets.only(top: 10)),
                             Row(
                               children: [
                                 Padding(padding: const EdgeInsets.only(left: 29)),
-                                Text("Nickname", style: basicTextStyle,),
-                                Padding(padding: const EdgeInsets.only(left: 250)),
+                                Text(tripsProvider.languageCode == "en" ? "Name" : "Имя", 
+                                      style: basicTextStyle),
                               ],
                             ),
                             Padding(padding: const EdgeInsets.only(top: 7)),
@@ -79,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Padding(padding: const EdgeInsets.only(left: 15)),
-                                    SelectableText(tripsProvider.myName, style: basicTextStyle,),
+                                    Text(tripsProvider.myName, style: basicTextStyle,),
                                     Expanded(flex: 1, child: Text("")),
                                   ],
                                 ),
@@ -90,8 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Row(
                               children: [
                                 Padding(padding: const EdgeInsets.only(left: 29)),
-                                Text("Email address", style: basicTextStyle,),
-                                Padding(padding: const EdgeInsets.only(left: 225)),
+                                Text(tripsProvider.languageCode == "en" ? "Email address" : "Электронная почта", style: basicTextStyle,),
                               ],
                             ),
                             Padding(padding: const EdgeInsets.only(top: 7)),
@@ -107,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Padding(padding: const EdgeInsets.only(left: 15)),
-                                    SelectableText(tripsProvider.email, style: basicTextStyle,),
+                                    Text(tripsProvider.email, style: basicTextStyle,),
                                     Expanded(flex: 1, child: Text("")),
                                   ],
                                 ),
@@ -118,8 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Row(
                               children: [
                                 Padding(padding: const EdgeInsets.only(left: 29)),
-                                Text("Password", style: basicTextStyle,),
-                                Padding(padding: const EdgeInsets.only(left: 250)),
+                                Text(tripsProvider.languageCode == "en" ? "Password" : "Пароль", style: basicTextStyle,),
                               ],
                             ),
                             Padding(padding: const EdgeInsets.only(top: 7)),
@@ -144,7 +142,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                           obscure = !obscure;
                                         });
                                       },
-                                      icon: Icon(obscure ? Icons.visibility_off : Icons.visibility, size: 20, color: buttonColor,),
+                                      icon: Icon(obscure ? Icons.visibility_off : Icons.visibility, size: 20, color: buttonColorW,),
                                     ),
                                   ],
                                 ),
@@ -168,27 +166,34 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor: WidgetStateProperty.all<Color>(
-                            buttonColor,
+                            tripsProvider.lightMode == "light" ? buttonColorW : buttonColorInvis,
                           ),
                           textStyle: WidgetStateProperty.all<TextStyle>(
                             buttonTextStyleMedium,
                           ),
-                          shape:
-                              WidgetStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
+                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          side: WidgetStateProperty.all<BorderSide>(
+                            BorderSide(color: tripsProvider.lightMode == "light" ? invisColor : whiteColor, width: 2),
+                          ),
                         ),
                         onPressed: () {
-                          
+                          tripsProvider.toggleLightMode();
                         },
                         child: Column(
                           children: [
                             const Expanded(flex: 1, child: Text(""),),
-                            Icon(Icons.sunny, size: 60),
+                            Icon(tripsProvider.lightMode == "light" ? Icons.dark_mode : Icons.light_mode, size: 60, color: tripsProvider.lightMode == "dark" ? whiteColor : null,),
                             const Expanded(flex: 1, child: Text(""),),
-                            Text("Dark mode", textAlign: TextAlign.center,),
+                            Text( tripsProvider.lightMode == "dark" ?
+                                  (tripsProvider.languageCode == "en" ? "Light mod" : "Свет. тема") : 
+                                  (tripsProvider.languageCode == "en" ? "Dark mode" : "Тёмная тема"), 
+                                  textAlign: TextAlign.center,
+                                  style: tripsProvider.lightMode == "light" ? null : buttonTextStyleMediumWhite,
+                            ),
                             const Expanded(flex: 1, child: Text(""),),
                           ],
                         ),
@@ -202,27 +207,32 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor: WidgetStateProperty.all<Color>(
-                            buttonColor,
+                            tripsProvider.lightMode == "light" ? buttonColorW : buttonColorInvis,
                           ),
                           textStyle: WidgetStateProperty.all<TextStyle>(
                             buttonTextStyleMedium,
                           ),
-                          shape:
-                              WidgetStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
+                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          side: WidgetStateProperty.all<BorderSide>(
+                            BorderSide(color: tripsProvider.lightMode == "light" ? invisColor : whiteColor, width: 2),
+                          ),
                         ),
                         onPressed: () {
-                          
+                          tripsProvider.toggleLanguage();
                         },
                         child: Column(
                           children: [
                             const Expanded(flex: 1, child: Text(""),),
-                            Icon(Icons.language, size: 60),
+                            Icon(Icons.language, size: 60, color: tripsProvider.lightMode == "dark" ? whiteColor : null,),
                             const Expanded(flex: 1, child: Text(""),),
-                            Text("Language", textAlign: TextAlign.center,),
+                            Text(tripsProvider.languageCode == "en" ? "Language" : "Язык", 
+                                textAlign: TextAlign.center,
+                                style: tripsProvider.lightMode == "light" ? null : buttonTextStyleMediumWhite,
+                            ),
                             const Expanded(flex: 1, child: Text(""),),
                           ],
                         ),
@@ -236,20 +246,19 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor: WidgetStateProperty.all<Color>(
-                            logOutColor,
+                            tripsProvider.lightMode == "light" ? logOutColor : buttonColorInvis,
                           ),
                           textStyle: WidgetStateProperty.all<TextStyle>(
                             buttonTextStyleMedium,
                           ),
-                          // foregroundColor: WidgetStateProperty.all<Color>(
-                          //   ,
-                          // ),
-                          shape:
-                              WidgetStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
+                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          side: WidgetStateProperty.all<BorderSide>(
+                            BorderSide(color: tripsProvider.lightMode == "light" ? invisColor : logOutColor, width: 2),
+                          ),
                         ),
                         onPressed: () {
                           tripsProvider.clearMyPersonalInfo();
@@ -258,9 +267,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: Column(
                           children: [
                             const Expanded(flex: 1, child: Text(""),),
-                            Icon(Icons.logout, size: 60),
+                            Icon(Icons.logout, size: 60, color: tripsProvider.lightMode == "dark" ? logOutColor : null,),
                             const Expanded(flex: 1, child: Text(""),),
-                            Text("LOG OUT", textAlign: TextAlign.center,),
+                            Text(tripsProvider.languageCode == "en" ? "LOG OUT" : "ВЫЙТИ", textAlign: TextAlign.center,
+                                style: tripsProvider.lightMode == "light" ? null : buttonTextStyleMediumLogOut,
+                            ),
                             const Expanded(flex: 1, child: Text(""),),
                           ],
                         ),
