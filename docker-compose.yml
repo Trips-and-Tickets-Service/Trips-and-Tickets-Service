@@ -6,6 +6,7 @@ services:
       - database
     build:
       context: backend
+      dockerfile: Dockerfile
     container_name: nexspace_backend
     ports:
       - "8080:8080"
@@ -29,8 +30,22 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgresql_volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
-  # TODO: Container with flutter web app
-
+  frontend:
+    depends_on:
+      - backend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: nexspace_frontend
+    ports:
+      - "8000:8000"
+    environment:
+      API_URL: http://backend:8080
+    deploy:
+      restart_policy:
+        condition: on-failure
 volumes:
   postgresql_volume:
