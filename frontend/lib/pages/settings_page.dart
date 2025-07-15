@@ -260,8 +260,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             BorderSide(color: tripsProvider.lightMode == "light" ? invisColor : logOutColor, width: 2),
                           ),
                         ),
-                        onPressed: () {
-                          tripsProvider.clearMyPersonalInfo();
+                        onPressed: () async {
+                          await tripsProvider.clearMyPersonalInfo();
                           Navigator.pushNamed(context, '/');
                         },
                         child: Column(

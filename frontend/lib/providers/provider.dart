@@ -40,7 +40,7 @@ class TripsProvider extends ChangeNotifier {
   String _lightMode = 'light';
   String get lightMode => _lightMode;
 
-  String _accessToken = 'NoneAccessToken';
+  String _accessToken = 'NoneAccessTokenInInitialProvider';
   String get accessToken => _accessToken;
   set accessToken(String value) {
     _accessToken = value;
@@ -74,7 +74,7 @@ class TripsProvider extends ChangeNotifier {
   }
 
   // For saving the information about the user after registration/signin
-  void saveMyPersonalInfo() async {
+  Future<void> saveMyPersonalInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('myName', _myName);
     await prefs.setInt('myID', _myID);
@@ -90,24 +90,30 @@ class TripsProvider extends ChangeNotifier {
     _myID = prefs.getInt('myID') ?? -1;
     _email = prefs.getString('email') ?? 'NavNotEmail';
     _password = prefs.getString('password') ?? 'NavNotPass';
-    _accessToken = prefs.getString('accessToken') ?? 'NoneAccessToken';
+    // _accessToken = prefs.getString('accessToken') ?? 'NoneAccessTokenInPersInfo';
+    notifyListeners();
+  }
+
+  Future<void> loadAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _accessToken = prefs.getString('accessToken') ?? 'NoneAccessTokenInLoad';
     notifyListeners();
   }
 
   // For clearing the information about the user after signout
-  void clearMyPersonalInfo() async {
+  Future<void> clearMyPersonalInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('myName');
-    await prefs.remove('myID');
-    await prefs.remove('email');
-    await prefs.remove('password');
-    await prefs.remove('accessToken');
+    // await prefs.remove('myName');
+    // await prefs.remove('myID');
+    // await prefs.remove('email');
+    // await prefs.remove('password');
+    // await prefs.remove('accessToken');
+    await prefs.clear();
     _myName = 'HaveNotName';
     _myID = -1;
     _email = 'NavNotEmail';
     _password = 'NavNotPass';
-    _accessToken = 'NoneAccessToken';
+    _accessToken = 'NoneAccessTokenInLogOut';
     notifyListeners();
   }
-  
 }

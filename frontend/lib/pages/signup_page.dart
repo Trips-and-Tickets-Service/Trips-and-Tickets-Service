@@ -349,7 +349,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 tripsProvider.email = controller2.text;
                                 tripsProvider.password = controller3.text;
                                 tripsProvider.accessToken = accessToken;
-                                tripsProvider.saveMyPersonalInfo();
+                                await tripsProvider.saveMyPersonalInfo();
                                 Navigator.pushNamed(context, '/mainmenu');
                               }
                             }

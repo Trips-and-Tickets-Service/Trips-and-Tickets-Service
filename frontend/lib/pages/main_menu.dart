@@ -23,6 +23,17 @@ class _MainNavigationState extends State<MainNavigation> {
     SettingsPage(),
   ];
 
+  @override
+  void initState() {
+    loadAcc();
+    super.initState();
+  }
+
+  void loadAcc() async {
+    final tripsProvider = Provider.of<TripsProvider>(context, listen: false);
+    await tripsProvider.loadAccessToken();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -33,6 +44,7 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
     tripsProvider.loadLanguageAndLightMode();
+    // tripsProvider.loadAccessToken();
 
     return Scaffold(
       body: _screens[_selectedIndex],

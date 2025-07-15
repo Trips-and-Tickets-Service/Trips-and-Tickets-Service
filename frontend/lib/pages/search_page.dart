@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/provider.dart';
 import '../data/styles.dart';
 import '../data/urls.dart';
+import '../data/ticket.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -27,9 +29,9 @@ class _SearchPageState extends State<SearchPage> {
 
   List<String> planets = [];
 
-  List<Map<String, dynamic>> tickets = [];
+  List<Ticket>? tickets = [];
 
-  List<Map<String, dynamic>> boughtTickets = [];
+  List<Ticket> boughtTickets = [];
 
   @override
   void initState() {
@@ -115,6 +117,7 @@ class _SearchPageState extends State<SearchPage> {
       });
     }
   }
+  
 
   Future<void> _pickDateTo(BuildContext context, bool isDeparture) async {
     pickedTo = await showDatePicker(
@@ -133,7 +136,7 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  void _searchTickets() async {
+  void _searchTickets(String accessToken) async {
     if (departurePlanet == null ||
         arrivalPlanet == null ||
         departureDate == null ||
@@ -145,28 +148,73 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     // 🔧 Заглушка вместо запроса к backend
-    tickets = List.generate(
-      10,
-      (index) => {
-        'id': index,
-        'departurePlanet': departurePlanet,
-        'departureDate': DateFormat('yyyy-MM-dd').format(departureDate!),
-        'arrivalPlanet': arrivalPlanet,
-        'arrivalDate': DateFormat('yyyy-MM-dd').format(arrivalDate!),
-        'sold': 50 + index * 10 < 100 ? 50 + index * 10 : 100,
-        'total': 100,
-        'duration': '2д 4ч',
-        'price': 4200 + index * 500,
-      },
+    // tickets = List.generate(
+    //   10,
+    //   (index) => {
+    //     'id': index,
+    //     'departurePlanet': departurePlanet,
+    //     'departureDate': DateFormat('yyyy-MM-dd').format(departureDate!),
+    //     'arrivalPlanet': arrivalPlanet,
+    //     'arrivalDate': DateFormat('yyyy-MM-dd').format(arrivalDate!),
+    //     'sold': 50 + index * 10 < 100 ? 50 + index * 10 : 100,
+    //     'total': 100,
+    //     'price': 4200 + index * 500,
+    //   },
+    // );
+
+    tickets = await fetchTickets(
+      departurePlanet: departurePlanet!,
+      arrivalPlanet: arrivalPlanet!,
+      departureDate: departureDate!,
+      arrivalDate: arrivalDate!,
+      accessToken: accessToken
     );
 
     setState(() {});
   }
 
+  Future<List<Ticket>?> fetchTickets({
+  required String departurePlanet,
+  required String arrivalPlanet,
+  required DateTime departureDate,
+  required DateTime arrivalDate,
+  required String accessToken
+}) async {
+  final uri = Uri.parse('http://localhost:8080/api/trips/schedule').replace(
+    queryParameters: {
+      'from': departurePlanet.toLowerCase(),
+      'to': arrivalPlanet.toLowerCase(),
+      'departure_time': (departureDate.millisecondsSinceEpoch ~/ 1000).toString(), // UNIX time (seconds)
+      'arrival_time': (arrivalDate.millisecondsSinceEpoch ~/ 1000).toString(),
+    },
+  );
+
+  final response = await http.get(
+    uri,
+    headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': accessToken},
+  );
+
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    final List<dynamic> data = jsonDecode(response.body);
+    return data.map((json) => Ticket.fromJson(json)).toList();
+  } else {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('You are not logged in. ${response.body}. ${accessToken}')));
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    Navigator.pushNamed(context, '/');
+    return [];
+    
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     final tripsProvider = Provider.of<TripsProvider>(context);
     tripsProvider.loadLanguageAndLightMode();
+    // tripsProvider.loadAccessToken();
 
     return Scaffold(
       body: Container(
@@ -338,7 +386,9 @@ class _SearchPageState extends State<SearchPage> {
                                         ),
                                       ),
                                 ),
-                                onPressed: _searchTickets,
+                                onPressed: () {
+                                  _searchTickets(tripsProvider.accessToken);
+                                },
                                 child: Text(tripsProvider.languageCode == "en" ? 'SEARCH' : 'ПОИСК',
                                     style: tripsProvider.lightMode == 'dark' ?  buttonTextStyleInvis : null
                                 ),
@@ -358,9 +408,9 @@ class _SearchPageState extends State<SearchPage> {
                 child: SizedBox(
                   width: kIsWeb ? 600 : 400,
                     child: ListView.builder(
-                      itemCount: tickets.length,
+                      itemCount: tickets!.length,
                       itemBuilder: (context, index) {
-                        final ticket = tickets[index];
+                        final ticket = tickets![index];
                         return Column(
                           children: [
                             Card(
@@ -374,14 +424,14 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                               child: ListTile(
                                 // leading: Icon(Icons.public),
-                                leading: Image(image: AssetImage(getIconOfPlanet(ticket['arrivalPlanet']))),
+                                leading: Image(image: AssetImage(getIconOfPlanet(ticket.to))),
                                 title: Text(
-                                  '${ticket['departurePlanet']} → ${ticket['arrivalPlanet']}',
+                                  '${ticket.from} → ${ticket.to}',
                                   style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor, fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text( tripsProvider.languageCode == "en" ?
-                                  'Departure: ${ticket['departureDate']}\nArrival: ${ticket['arrivalDate']}'
-                                  : 'Вылет: ${ticket['departureDate']}\nПрилет: ${ticket['arrivalDate']}',
+                                  'Departure: ${ticket.departureTime}\nArrival: ${ticket.arrivalTime}'
+                                  : 'Вылет: ${ticket.departureTime}\nПрилет: ${ticket.arrivalTime}',
                                   style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor),
                                 ),
                                 trailing: Column(
@@ -389,15 +439,15 @@ class _SearchPageState extends State<SearchPage> {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.end,
                                   children: [
-                                    if ((ticket['sold'] >= ticket['total']) || boughtTickets.contains(ticket))
+                                    if ((ticket.availableSeats < 1) || boughtTickets.contains(ticket))
                                       Column(
                                         children: [
-                                          Text('${ticket['price']} ₽', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,)),
+                                          Text('${ticket.price} ₽', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,)),
                                           Padding(padding: const EdgeInsets.only(top: 5)),
-                                          Text('${ticket['sold']}/${ticket['total']}', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,),),
+                                          Text('${ticket.availableSeats}/${ticket.maxSeats}', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,),),
                                         ],
                                       ),
-                                    if ((ticket['sold'] < ticket['total']) && !boughtTickets.contains(ticket))
+                                    if ((ticket.availableSeats > 0) && !boughtTickets.contains(ticket))
                                       SizedBox(
                                         width: 100,
                                         height: 48,
@@ -427,9 +477,9 @@ class _SearchPageState extends State<SearchPage> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              Text('${ticket['price']} ₽', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                              Text('${ticket.price} ₽', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                                               Padding(padding: const EdgeInsets.only(top: 5)),
-                                              Text('${ticket['sold']}/${ticket['total']}'),
+                                              Text('${ticket.availableSeats}/${ticket.maxSeats}'),
                                             ],
                                           ),
                                         ),
@@ -445,6 +495,10 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                 ),
+                IconButton(onPressed: () => ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('Access tocken: ${tripsProvider.accessToken}'))), 
+                icon: Icon(Icons.info, color: invisColor,)),
             ],
           ),
         ),

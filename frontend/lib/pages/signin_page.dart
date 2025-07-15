@@ -255,7 +255,7 @@ class _SignInPageState extends State<SignInPage> {
                                 tripsProvider.email = controller.text;
                                 tripsProvider.password = controller2.text;
                                 tripsProvider.accessToken = accessToken;
-                                tripsProvider.saveMyPersonalInfo();
+                                await tripsProvider.saveMyPersonalInfo();
                                 Navigator.pushNamed(context, '/mainmenu');
                               }
                             }
