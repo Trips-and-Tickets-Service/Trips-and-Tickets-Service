@@ -12,7 +12,7 @@ type Repository struct {
 func NewUserRepository(db *gorm.DB) *Repository {
 	return &Repository{db: db}
 }
-func (r Repository) GetUserByEmail(email string) (user User, err error) {
+func (r *Repository) GetUserByEmail(email string) (user User, err error) {
 	err = r.db.Where(&User{Email: email}).First(&user).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return User{}, nil
@@ -20,7 +20,7 @@ func (r Repository) GetUserByEmail(email string) (user User, err error) {
 	return user, err
 }
 
-func (r Repository) Create(user *User) error {
+func (r *Repository) Create(user *User) error {
 	result := r.db.Create(&user)
 	if result.Error != nil {
 		return result.Error

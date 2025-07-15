@@ -13,17 +13,18 @@ import (
 	"nexspace/main/internal/handler"
 	"nexspace/main/internal/jwtservice"
 	"nexspace/main/internal/middleware"
+	trip "nexspace/main/internal/trip"
 	"nexspace/main/internal/user"
 	"nexspace/main/pkg/config"
 	"time"
 )
 
-// @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
+//	@contact.name	API Support
+//	@contact.url	http://www.swagger.io/support
+//	@contact.email	support@swagger.io
 
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+// @license.name	Apache 2.0
+// @license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 func main() {
 	cfg, err := config.LoadConfig()
 
@@ -54,7 +55,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = db.AutoMigrate(user.User{})
+	err = db.AutoMigrate(user.User{}, trip.Trip{})
 	if err != nil {
 		log.Println("Error while migration:")
 		log.Fatal(err)
@@ -66,7 +67,11 @@ func main() {
 	}
 
 	userService := user.NewUserService(user.NewUserRepository(db), *jwtService)
-	userHandler := handler.NewUserHandler(*userService)
+	userHandler := handler.NewUserHandler(userService)
+
+	tripService := trip.NewTripService(trip.NewTripRepository(db))
+	tripHandler := handler.NewTripHandler(tripService)
+
 	public := router.Group("/api")
 	{
 		public.POST("/signup", userHandler.SignUp)
@@ -80,6 +85,9 @@ func main() {
 		private.GET("/test", func(context *gin.Context) {
 			context.Status(http.StatusOK)
 		})
+
+		private.GET("/trips", tripHandler.GetTrips)
+		private.GET("/trips/schedule", tripHandler.GetTripsInRange)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

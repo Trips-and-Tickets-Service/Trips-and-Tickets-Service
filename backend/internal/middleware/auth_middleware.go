@@ -20,6 +20,7 @@ func AuthMiddleware(service *jwtservice.JWTService) gin.HandlerFunc {
 
 		if err != nil {
 			utils.SendErrorResponse(c, http.StatusUnauthorized, err)
+			return
 		}
 
 		c.Set("user_id", claims.UserID)

@@ -16,7 +16,7 @@ func NewUserService(repository *Repository, jwtService jwtservice.JWTService) *S
 	return &Service{repository: repository, jwtService: jwtService}
 }
 
-func (s Service) RegisterUser(request RegisterUserRequest) (AccessToken, error) {
+func (s *Service) RegisterUser(request RegisterUserRequest) (AccessToken, error) {
 	var existingUser User
 	existingUser, err := s.repository.GetUserByEmail(request.Email)
 	if err != nil {
@@ -52,7 +52,7 @@ func (s Service) RegisterUser(request RegisterUserRequest) (AccessToken, error) 
 	return AccessToken{AccessToken: token}, nil
 }
 
-func (s Service) LoginUser(request LoginUserRequest) (AccessToken, error) {
+func (s *Service) LoginUser(request LoginUserRequest) (AccessToken, error) {
 	user, err := s.repository.GetUserByEmail(request.Email)
 	if err != nil {
 		log.Print(err)
