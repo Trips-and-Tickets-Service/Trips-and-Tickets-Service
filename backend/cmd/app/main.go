@@ -77,6 +77,8 @@ func main() {
 	ticketService := ticket.NewTicketService(ticket.NewTicketRepository(db), tripService)
 	ticketHandler := handler.NewTicketHandler(ticketService, userService)
 
+	router.Use(middleware.CorsMiddleware())
+
 	public := router.Group("/api")
 	{
 		public.POST("/signup", userHandler.SignUp)
