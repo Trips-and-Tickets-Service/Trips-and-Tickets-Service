@@ -11,42 +11,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Шаг 1: Клонирование репозитория
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          path: 'frontend'  # Указываем путь к Flutter-проекту
-
-      # Шаг 2: Установка Flutter
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      # Шаг 3: Переходим в директорию проекта
-      - name: Change directory
-        run: cd frontend
-
-      # Шаг 4: Форматирование кода
       - name: Format code
         run: dart format .
+        working-directory: ./frontend  # <-- Добавьте это
 
-      # Шаг 5: Получение зависимостей
       - name: Get dependencies
         run: flutter pub get
+        working-directory: ./frontend  # <-- Ключевое исправление!
 
-      # Шаг 6: Запуск тестов
-      - name: Run all tests
+      - name: Run tests
         run: flutter test
+        working-directory: ./frontend
 
-      # Шаг 7: Сборка проекта
       - name: Build for web
         run: flutter build web --release
+        working-directory: ./frontend
 
-      # Шаг 8: Деплой
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: frontend/build/web  # Указываем полный путь
+          publish_dir: ./frontend/build/web  # Путь относительно корня репозитория
