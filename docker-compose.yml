@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  backend:
+    depends_on:
+      - database
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    container_name: nexspace_backend
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      HTTP_PORT: ${HTTP_PORT}
+      SECRET_KEY: ${SECRET_KEY}
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  database:
+    image: 'postgres:latest'
+    container_name: database
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgresql_volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  frontend:
+    depends_on:
+      - backend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: nexspace_frontend
+    ports:
+      - "8000:80"
+    environment:
+      API_URL: http://backend:8080
+    deploy:
+      restart_policy:
+        condition: on-failure
+volumes:
+  postgresql_volume:

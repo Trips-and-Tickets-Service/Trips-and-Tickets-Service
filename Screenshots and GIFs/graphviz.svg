@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="522pt" height="346pt" viewBox="0.00 0.00 522.49 346.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 342)">
+<title>public</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-342 518.49,-342 518.49,4 -4,4"/>
+<!-- tickets -->
+<g id="node1" class="node">
+<title>tickets</title>
+<polygon fill="none" stroke="black" points="146.61,-229.5 146.61,-337.5 379.54,-337.5 379.54,-229.5 146.61,-229.5"/>
+<text text-anchor="middle" x="263.08" y="-320.9" font-family="Times,serif" font-size="14.00">tickets</text>
+<polyline fill="none" stroke="black" points="146.61,-312.7 379.54,-312.7"/>
+<text text-anchor="start" x="154.61" y="-296.1" font-family="Times,serif" font-size="14.00">user_id : bigint</text>
+<text text-anchor="start" x="154.61" y="-279.3" font-family="Times,serif" font-size="14.00"> trip_id : bigint</text>
+<text text-anchor="start" x="154.61" y="-262.5" font-family="Times,serif" font-size="14.00"> created_at : timestamp with time zone</text>
+<polyline fill="none" stroke="black" points="146.61,-254.3 379.54,-254.3"/>
+<text text-anchor="start" x="154.61" y="-237.7" font-family="Times,serif" font-size="14.00">id : bigint</text>
+</g>
+<!-- trips -->
+<g id="node2" class="node">
+<title>trips</title>
+<polygon fill="none" stroke="black" points="0,-0.5 0,-175.7 260.15,-175.7 260.15,-0.5 0,-0.5"/>
+<text text-anchor="middle" x="130.08" y="-159.1" font-family="Times,serif" font-size="14.00">trips</text>
+<polyline fill="none" stroke="black" points="0,-150.9 260.15,-150.9"/>
+<text text-anchor="start" x="8" y="-134.3" font-family="Times,serif" font-size="14.00">from_planet : text</text>
+<text text-anchor="start" x="8" y="-117.5" font-family="Times,serif" font-size="14.00"> to_planet : text</text>
+<text text-anchor="start" x="8" y="-100.7" font-family="Times,serif" font-size="14.00"> departure_time : timestamp with time zone</text>
+<text text-anchor="start" x="8" y="-83.9" font-family="Times,serif" font-size="14.00"> arrival_time : timestamp with time zone</text>
+<text text-anchor="start" x="8" y="-67.1" font-family="Times,serif" font-size="14.00"> available_seats : bigint</text>
+<text text-anchor="start" x="8" y="-50.3" font-family="Times,serif" font-size="14.00"> max_seats : bigint</text>
+<text text-anchor="start" x="8" y="-33.5" font-family="Times,serif" font-size="14.00"> price : bigint</text>
+<polyline fill="none" stroke="black" points="0,-25.3 260.15,-25.3"/>
+<text text-anchor="start" x="8" y="-8.7" font-family="Times,serif" font-size="14.00">id : bigint</text>
+</g>
+<!-- tickets&#45;&gt;trips -->
+<g id="edge1" class="edge">
+<title>tickets-&gt;trips</title>
+<path fill="none" stroke="#595959" d="M203.38,-229.07C203.38,-229.07 203.38,-187.46 203.38,-187.46"/>
+<polygon fill="#595959" stroke="#595959" points="206.88,-187.46 203.38,-177.46 199.88,-187.46 206.88,-187.46"/>
+<text text-anchor="middle" x="156.13" y="-198.4" font-family="Times,serif" font-size="14.00">trip_id:id</text>
+</g>
+<!-- users -->
+<g id="node3" class="node">
+<title>users</title>
+<polygon fill="none" stroke="black" points="277.66,-8.9 277.66,-167.3 514.49,-167.3 514.49,-8.9 277.66,-8.9"/>
+<text text-anchor="middle" x="396.08" y="-150.7" font-family="Times,serif" font-size="14.00">users</text>
+<polyline fill="none" stroke="black" points="277.66,-142.5 514.49,-142.5"/>
+<text text-anchor="start" x="285.66" y="-125.9" font-family="Times,serif" font-size="14.00">created_at : timestamp with time zone</text>
+<text text-anchor="start" x="285.66" y="-109.1" font-family="Times,serif" font-size="14.00"> updated_at : timestamp with time zone</text>
+<text text-anchor="start" x="285.66" y="-92.3" font-family="Times,serif" font-size="14.00"> deleted_at : timestamp with time zone</text>
+<text text-anchor="start" x="285.66" y="-75.5" font-family="Times,serif" font-size="14.00"> name : text</text>
+<text text-anchor="start" x="285.66" y="-58.7" font-family="Times,serif" font-size="14.00"> email : text</text>
+<text text-anchor="start" x="285.66" y="-41.9" font-family="Times,serif" font-size="14.00"> password : text</text>
+<polyline fill="none" stroke="black" points="277.66,-33.7 514.49,-33.7"/>
+<text text-anchor="start" x="285.66" y="-17.1" font-family="Times,serif" font-size="14.00">id : bigint</text>
+</g>
+<!-- tickets&#45;&gt;users -->
+<g id="edge2" class="edge">
+<title>tickets-&gt;users</title>
+<path fill="none" stroke="#595959" d="M328.6,-229.07C328.6,-229.07 328.6,-178.95 328.6,-178.95"/>
+<polygon fill="#595959" stroke="#595959" points="332.1,-178.95 328.6,-168.95 325.1,-178.95 332.1,-178.95"/>
+<text text-anchor="middle" x="424.07" y="-198.4" font-family="Times,serif" font-size="14.00">user_id:id</text>
+</g>
+</g>
+</svg>

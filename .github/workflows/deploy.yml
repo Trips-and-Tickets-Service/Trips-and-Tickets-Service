@@ -1,0 +1,47 @@
+name: Flutter Web CI/CD Pipeline
+#add fix to permission
+on:
+  push:
+    branches: [CI/CD]
+  pull_request:
+    branches: [CI/CD]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Format code
+        run: dart format .
+        working-directory: ./frontend
+
+      - name: Get dependencies
+        run: flutter pub get
+        working-directory: ./frontend
+
+      - name: Run tests
+        run: flutter test
+        working-directory: ./frontend
+
+      - name: Build for web
+        run: flutter build web --release --base-href /Trips-and-Tickets-Service/
+        working-directory: ./frontend
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/build/web
+          publish_branch: gh-pages
+          force_orphan: true
+          keep_files: false
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy Flutter Web: ${{ github.sha }}'
