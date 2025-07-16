@@ -1,4 +1,4 @@
-name: Full Stack CI/CD Pipeline
+name: Full Stack CI/CD
 
 on:
   push:
@@ -7,16 +7,45 @@ on:
     branches: [CI/CD]
 
 jobs:
-  # Бэкенд (Go) + PostgreSQL
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+        working-directory: ./frontend
+
+      - name: Run Flutter tests
+        run: flutter test
+        working-directory: ./frontend
+
+      - name: Build Flutter Web
+        run: flutter build web --release --base-href /Trips-and-Tickets-Service/
+        working-directory: ./frontend
+
+      - name: Deploy Frontend to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/build/web
+          publish_branch: gh-pages
+
   backend:
+    needs: frontend
     runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_DB: test_db
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
         options: >-
@@ -31,61 +60,29 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.24'
+          go-version: '1.24.4'
 
-      - name: Install dependencies
-        run: |
-          cd backend
-          go mod download
+      - name: Install Go dependencies
+        run: go mod download
+        working-directory: ./backend
 
-      - name: Run tests with PostgreSQL
+      - name: Run Go tests
         env:
           POSTGRES_HOST: localhost
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_DB: test_db
-        run: |
-          cd backend
-          go test -v ./...
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: go test ./...
+        working-directory: ./backend
 
-      - name: Build backend Docker image
-        run: |
-          cd backend
-          docker build -t backend-app .
+      - name: Build Go binary
+        run: CGO_ENABLED=0 GOOS=linux go build -o ./bin/app ./cmd/app/main.go
+        working-directory: ./backend
 
-  # Фронтенд (Flutter)
-  frontend:
-    needs: backend  # Зависит от успешного выполнения бэкенда
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: subosito/flutter-action@v2
+      - name: Upload Backend Artifact
+        uses: actions/upload-artifact@v3
         with:
-          channel: stable
-          cache: true
-
-      - name: Format code
-        run: dart format .
-        working-directory: ./frontend
-
-      - name: Get dependencies
-        run: flutter pub get
-        working-directory: ./frontend
-
-      - name: Run tests
-        run: flutter test
-        working-directory: ./frontend
-
-      - name: Build for web
-        run: flutter build web --release --base-href /Trips-and-Tickets-Service/
-        working-directory: ./frontend
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend/build/web
-          publish_branch: gh-pages
-          force_orphan: true
+          name: backend-binary
+          path: ./backend/bin/app
+          retention-days: 1
