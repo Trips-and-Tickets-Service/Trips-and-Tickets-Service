@@ -153,6 +153,6 @@ Explanations: All repositories are independable, services communicate with each 
 - [X] Advanced animations and transitions (up to 3 points)
 - [ ] Widget implementation for native mobile elements (up to 2 points)
 
-Total points implemented: 38/30 (excluding bonus points)
+Total points implemented: 28/30 (excluding bonus points)
 
 Note: For each implemented feature, provide a brief description or link to the relevant implementation below the checklist.
