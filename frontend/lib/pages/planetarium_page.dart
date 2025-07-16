@@ -419,7 +419,7 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                   Row(
                     children: [
                       Container(
-                        width: tripsProvider.languageCode == "en" ? 124 : 122,
+                        width: tripsProvider.languageCode == "en" ? 124 : 120,
                         height: 2,
                         decoration: BoxDecoration(
                           color: tripsProvider.lightMode == 'dark' ? Colors.white : Colors.black,
@@ -428,7 +428,7 @@ class _PlanetInfoDialogState extends State<planetInfoDialog> {
                       ),
                       Text(tripsProvider.languageCode == "en" ? " Facts " : " Факты ", style: tripsProvider.lightMode == 'dark' ? basicTextStyle : basicTextStyleBlack,),
                       Container(
-                        width: tripsProvider.languageCode == "en" ? 124 : 121,
+                        width: tripsProvider.languageCode == "en" ? 124 : 120,
                         height: 2,
                         decoration: BoxDecoration(
                           color: tripsProvider.lightMode == 'dark' ? Colors.white : Colors.black,

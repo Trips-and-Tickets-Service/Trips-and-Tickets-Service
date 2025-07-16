@@ -497,7 +497,7 @@ class _SearchPageState extends State<SearchPage> {
                                     if ((ticket.availableSeats < 1) || boughtTickets.contains(ticket))
                                       Column(
                                         children: [
-                                          Text('${ticket.price} ₽', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,)),
+                                          Text('${ticket.price} ₽', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor)),
                                           Padding(padding: const EdgeInsets.only(top: 5)),
                                           Text('${ticket.availableSeats}/${ticket.maxSeats}', style: TextStyle(color: tripsProvider.lightMode == 'dark' ? whiteColor : blackColor,),),
                                         ],
@@ -533,7 +533,7 @@ class _SearchPageState extends State<SearchPage> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              Text('${ticket.price} ₽', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                              Text('${ticket.price} ₽', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                                               Padding(padding: const EdgeInsets.only(top: 5)),
                                               Text('${ticket.availableSeats}/${ticket.maxSeats}'),
                                             ],
