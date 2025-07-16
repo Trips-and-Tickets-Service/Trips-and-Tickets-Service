@@ -1,5 +1,5 @@
-name: Flutter Web CI/CD Pipeline
-#add fix to permission
+name: Full Stack CI/CD Pipeline
+
 on:
   push:
     branches: [CI/CD]
@@ -7,12 +7,60 @@ on:
     branches: [CI/CD]
 
 jobs:
-  build-and-deploy:
+  # Бэкенд (Go) + PostgreSQL
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          go mod download
+
+      - name: Run tests with PostgreSQL
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        run: |
+          cd backend
+          go test -v ./...
+
+      - name: Build backend Docker image
+        run: |
+          cd backend
+          docker build -t backend-app .
+
+  # Фронтенд (Flutter)
+  frontend:
+    needs: backend  # Зависит от успешного выполнения бэкенда
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -41,7 +89,3 @@ jobs:
           publish_dir: ./frontend/build/web
           publish_branch: gh-pages
           force_orphan: true
-          keep_files: false
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy Flutter Web: ${{ github.sha }}'
