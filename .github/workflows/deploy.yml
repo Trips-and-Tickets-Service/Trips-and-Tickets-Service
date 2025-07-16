@@ -1,5 +1,5 @@
 name: Full Stack CI/CD
-#
+
 on:
   push:
     branches: [CI/CD]
@@ -30,13 +30,16 @@ jobs:
         working-directory: ./frontend
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.DEPLOY_TOKEN }}  # Ваш PAT с правами repo
+          github_token: ${{ secrets.DEPLOY_TOKEN }}
           publish_dir: ./frontend/build/web
           publish_branch: gh-pages
           force_orphan: true
           keep_files: false
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy Flutter Web: ${{ github.sha }}'
 
   backend:
     needs: frontend
@@ -83,7 +86,7 @@ jobs:
         working-directory: ./backend
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend-binary
           path: ./backend/bin/app
